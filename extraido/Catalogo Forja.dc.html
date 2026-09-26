@@ -1,0 +1,1354 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;700&family=Manrope:wght@400;600;800&family=DM+Sans:wght@400;500;700&family=Spectral:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    html,body{margin:0;padding:0;background:#000;}
+    *{box-sizing:border-box;}
+    *::-webkit-scrollbar{width:8px;height:8px;}
+    *::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.14);border-radius:8px;}
+    *::-webkit-scrollbar-track{background:transparent;}
+    input::placeholder{color:rgba(255,255,255,0.32);}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+    @keyframes fadeUp2{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+    @keyframes scaleIn{from{opacity:0;transform:translateY(16px) scale(0.97);}to{opacity:1;transform:translateY(0) scale(1);}}
+    @keyframes scaleIn2{from{opacity:0;transform:translateY(16px) scale(0.97);}to{opacity:1;transform:translateY(0) scale(1);}}
+    @keyframes pulseDot{0%,80%,100%{opacity:0.25;transform:scale(0.85);}40%{opacity:1;transform:scale(1);}}
+    @keyframes respira{0%,100%{transform:scale(1);}50%{transform:scale(1.03);}}
+    @keyframes rutaDash{to{stroke-dashoffset:-40;}}
+    @keyframes aparecer{from{opacity:0;}to{opacity:1;}}
+  </style>
+</helmet>
+
+<div style="min-height:100vh;background:#000;color:#FFFFFF;font-family:'Sora',system-ui,sans-serif;">
+
+  <!-- ══════════ CARGANDO ══════════ -->
+  <sc-if value="{{ cargando }}" hint-placeholder-val="{{ true }}">
+    <div style="height:100vh;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;">
+      <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.4"><path d="M12 2l9 5.2v9.6L12 22l-9-5.2V7.2z"></path></svg>
+      <div style="font-size:12px;letter-spacing:0.3em;color:rgba(255,255,255,0.45);">FORJA</div>
+    </div>
+  </sc-if>
+
+  <!-- ══════════ CATÁLOGO ══════════ -->
+  <sc-if value="{{ esCat }}" hint-placeholder-val="{{ false }}">
+    <section data-screen-label="Catálogo" style="max-width:1280px;margin:0 auto;padding:0 32px 80px;">
+
+      <header style="display:flex;align-items:center;justify-content:space-between;padding:26px 0 0;">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.5"><path d="M12 2l9 5.2v9.6L12 22l-9-5.2V7.2z"></path><path d="M12 8v8M8 10v4M16 10v4" stroke-width="1.2"></path></svg>
+          <div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:17px;letter-spacing:0.22em;">FORJA</div>
+            <div style="font-size:11px;color:rgba(255,255,255,0.4);letter-spacing:0.04em;">Catálogo de PWAs configurables</div>
+          </div>
+        </div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.4);display:flex;align-items:center;gap:8px;">
+          <span style="width:6px;height:6px;border-radius:50%;background:#39D98A;display:inline-block;"></span>
+          {{ nPlantillas }} plantillas · combinaciones infinitas
+        </div>
+      </header>
+
+      <div style="padding:72px 0 44px;max-width:760px;">
+        <h1 style="font-family:'Space Grotesk',sans-serif;font-size:clamp(38px,5vw,60px);font-weight:700;line-height:1.04;letter-spacing:-0.02em;margin:0;text-wrap:balance;">Elige una base.<br>Configúrala. Libérala.</h1>
+        <p style="color:rgba(255,255,255,0.5);font-size:16px;line-height:1.6;margin:20px 0 0;max-width:560px;text-wrap:pretty;">Cada plantilla es una PWA real y navegable. Cambia pantallas, navegación, estilo, roles y features en vivo — y exporta la especificación completa de frontend y backend para generar su código.</p>
+      </div>
+
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px;">
+        <sc-for list="{{ filtros }}" as="f" hint-placeholder-count="6">
+          <button onClick="{{ onFiltro }}" data-id="{{ f.n }}" style="cursor:pointer;font-family:'Sora',sans-serif;font-size:12.5px;padding:8px 16px;border-radius:100px;background:{{ f.bg }};color:{{ f.col }};border:1px solid {{ f.bord }};transition:all 0.2s;" style-hover="border-color:rgba(255,255,255,0.35);">{{ f.n }}</button>
+        </sc-for>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(285px,1fr));gap:18px;">
+        <sc-for list="{{ lista }}" as="tpl" hint-placeholder-count="6">
+          <button onClick="{{ onAbrir }}" data-id="{{ tpl.id }}" style="cursor:pointer;text-align:left;font-family:'Sora',sans-serif;background:rgba(255,255,255,0.028);border:1px solid rgba(255,255,255,0.09);border-radius:22px;padding:0;overflow:hidden;color:#FFFFFF;transition:transform 0.25s cubic-bezier(0.2,0.7,0.2,1),border-color 0.25s,box-shadow 0.25s;animation:fadeUp 0.5s cubic-bezier(0.2,0.7,0.2,1) both;" style-hover="transform:translateY(-5px);border-color:rgba(255,255,255,0.22);box-shadow:0 24px 60px -30px {{ tpl.acento }}55;">
+            <div style="height:168px;position:relative;display:flex;align-items:center;justify-content:center;background:radial-gradient(120% 130% at 50% 115%, {{ tpl.acento }}24 0%, transparent 60%);border-bottom:1px solid rgba(255,255,255,0.06);">
+              <div style="width:96px;height:140px;border-radius:16px;border:1px solid {{ tpl.acento }}55;background:rgba(0,0,0,0.55);backdrop-filter:blur(6px);padding:10px 9px;display:flex;flex-direction:column;gap:6px;transform:translateY(18px);">
+                <div style="width:26px;height:4px;border-radius:4px;background:{{ tpl.acento }};"></div>
+                <div style="height:26px;border-radius:7px;background:rgba(255,255,255,0.10);"></div>
+                <div style="height:16px;border-radius:6px;background:rgba(255,255,255,0.07);"></div>
+                <div style="height:16px;border-radius:6px;background:rgba(255,255,255,0.07);width:70%;"></div>
+                <div style="display:flex;gap:7px;justify-content:center;margin-top:auto;padding-bottom:2px;">
+                  <span style="width:5px;height:5px;border-radius:50%;background:{{ tpl.acento }};"></span>
+                  <span style="width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,0.25);"></span>
+                  <span style="width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,0.25);"></span>
+                  <span style="width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,0.25);"></span>
+                </div>
+              </div>
+              <span style="position:absolute;top:14px;left:16px;font-size:10.5px;letter-spacing:0.12em;text-transform:uppercase;color:{{ tpl.acento }};background:{{ tpl.acento }}14;border:1px solid {{ tpl.acento }}33;padding:4px 10px;border-radius:100px;">{{ tpl.cat }}</span>
+            </div>
+            <div style="padding:18px 20px 20px;">
+              <div style="display:flex;align-items:baseline;gap:10px;">
+                <span style="font-family:'Space Grotesk',sans-serif;font-size:19px;font-weight:700;">{{ tpl.n }}</span>
+                <span style="font-size:12px;color:rgba(255,255,255,0.42);">{{ tpl.tag }}</span>
+              </div>
+              <p style="margin:8px 0 14px;font-size:12.5px;line-height:1.55;color:rgba(255,255,255,0.52);text-wrap:pretty;">{{ tpl.desc }}</p>
+              <div style="display:flex;align-items:center;gap:14px;font-size:11.5px;color:rgba(255,255,255,0.4);">
+                <span>{{ tpl.nScr }} pantallas</span><span>·</span><span>{{ tpl.nRoles }} roles</span><span>·</span><span>{{ tpl.nFeats }} features</span>
+                <span style="margin-left:auto;color:#FFFFFF;font-size:12px;">Configurar →</span>
+              </div>
+            </div>
+          </button>
+        </sc-for>
+      </div>
+    </section>
+  </sc-if>
+
+  <!-- ══════════ CONFIGURADOR ══════════ -->
+  <sc-if value="{{ esConf }}" hint-placeholder-val="{{ false }}">
+    <section data-screen-label="{{ etiqueta }}" style="height:100vh;display:flex;flex-direction:column;overflow:hidden;">
+
+      <header style="display:flex;align-items:center;gap:16px;padding:14px 22px;border-bottom:1px solid rgba(255,255,255,0.08);flex-shrink:0;">
+        <button onClick="{{ onVolver }}" style="cursor:pointer;display:flex;align-items:center;gap:8px;background:none;border:1px solid rgba(255,255,255,0.14);color:#FFFFFF;font-family:'Sora',sans-serif;font-size:12.5px;padding:8px 14px;border-radius:100px;transition:border-color 0.2s;" style-hover="border-color:rgba(255,255,255,0.4);">← Catálogo</button>
+        <div>
+          <div style="display:flex;align-items:center;gap:9px;">
+            <span style="width:9px;height:9px;border-radius:50%;background:{{ accApp }};display:inline-block;"></span>
+            <span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16px;">{{ p.n }}</span>
+            <span style="font-size:11.5px;color:rgba(255,255,255,0.4);">{{ p.tag }}</span>
+          </div>
+        </div>
+        <div style="margin-left:auto;display:flex;align-items:center;gap:14px;">
+          <span style="font-size:11px;color:rgba(255,255,255,0.35);">Se guarda solo · haz fork cuando sea tuya</span>
+          <div style="display:flex;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:100px;padding:3px;">
+            <button onClick="{{ onDevMovil }}" style="cursor:pointer;border:none;font-family:'Sora',sans-serif;font-size:12px;padding:6px 16px;border-radius:100px;background:{{ devMovilBg }};color:{{ devMovilCol }};transition:all 0.2s;">Móvil</button>
+            <button onClick="{{ onDevEsc }}" style="cursor:pointer;border:none;font-family:'Sora',sans-serif;font-size:12px;padding:6px 16px;border-radius:100px;background:{{ devEscBg }};color:{{ devEscCol }};transition:all 0.2s;">Escritorio</button>
+          </div>
+          <button onClick="{{ onExportar }}" style="cursor:pointer;font-family:'Sora',sans-serif;font-weight:600;font-size:12.5px;padding:9px 20px;border-radius:100px;background:#FFFFFF;color:#000000;border:none;transition:transform 0.2s;" style-hover="transform:scale(1.04);">Exportar ↗</button>
+        </div>
+      </header>
+
+      <div style="flex:1;display:flex;min-height:0;">
+
+        <!-- Panel de configuración -->
+        <aside style="width:355px;flex-shrink:0;border-right:1px solid rgba(255,255,255,0.08);display:flex;flex-direction:column;min-height:0;">
+          <div style="display:flex;flex-wrap:wrap;gap:6px;padding:14px 16px;border-bottom:1px solid rgba(255,255,255,0.07);">
+            <sc-for list="{{ tabs }}" as="tb" hint-placeholder-count="7">
+              <button onClick="{{ onTab }}" data-id="{{ tb.id }}" style="cursor:pointer;font-family:'Sora',sans-serif;font-size:11.5px;padding:7px 13px;border-radius:100px;background:{{ tb.bg }};color:{{ tb.col }};border:1px solid {{ tb.bord }};transition:all 0.2s;">{{ tb.n }}</button>
+            </sc-for>
+          </div>
+
+          <div style="flex:1;overflow-y:auto;padding:20px 18px 40px;">
+
+            <!-- PANTALLAS -->
+            <sc-if value="{{ tabPantallas }}" hint-placeholder-val="{{ false }}">
+              <div style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.38);margin-bottom:14px;">Pantallas de la app · {{ nActivas }}</div>
+              <div style="display:flex;flex-direction:column;gap:8px;">
+                <sc-for list="{{ pantallasCtl }}" as="pc" hint-placeholder-count="4">
+                  <div style="display:flex;align-items:center;gap:11px;background:{{ pc.bg }};border:1px solid {{ pc.bord }};border-radius:14px;padding:11px 13px;transition:all 0.2s;">
+                    <button onClick="{{ onVerPantalla }}" data-id="{{ pc.id }}" style="cursor:pointer;display:flex;align-items:center;gap:11px;background:none;border:none;color:#FFFFFF;font-family:'Sora',sans-serif;padding:0;flex:1;text-align:left;">
+                      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="{{ pc.icCol }}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="{{ pc.ic }}"></path></svg>
+                      <span style="font-size:13px;">{{ pc.n }}</span>
+                      <span style="font-size:10px;color:rgba(255,255,255,0.35);border:1px solid rgba(255,255,255,0.12);padding:2px 7px;border-radius:100px;">{{ pc.tipo }}</span>
+                      <sc-if value="{{ pc.esInicio }}" hint-placeholder-val="{{ false }}"><span style="font-size:10px;color:{{ accApp }};">inicio</span></sc-if>
+                    </button>
+                    <button onClick="{{ onTogglePantalla }}" data-id="{{ pc.id }}" style="cursor:pointer;width:38px;height:21px;border-radius:100px;border:none;background:{{ pc.swBg }};position:relative;transition:background 0.2s;flex-shrink:0;">
+                      <span style="position:absolute;top:2.5px;left:2.5px;width:16px;height:16px;border-radius:50%;background:#FFFFFF;transform:translateX({{ pc.swTx }});transition:transform 0.22s cubic-bezier(0.2,0.7,0.2,1);"></span>
+                    </button>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.38);margin:24px 0 12px;">Añadir pantalla</div>
+              <div style="display:flex;gap:7px;flex-wrap:wrap;">
+                <sc-for list="{{ extrasCtl }}" as="ex" hint-placeholder-count="3">
+                  <button onClick="{{ onAddExtra }}" data-id="{{ ex.id }}" style="cursor:pointer;font-family:'Sora',sans-serif;font-size:12px;padding:8px 14px;border-radius:100px;background:none;border:1px dashed rgba(255,255,255,0.22);color:rgba(255,255,255,0.7);transition:all 0.2s;" style-hover="border-color:{{ accApp }};color:#FFFFFF;">+ {{ ex.n }}</button>
+                </sc-for>
+              </div>
+              <p style="font-size:11.5px;color:rgba(255,255,255,0.35);line-height:1.6;margin:16px 0 0;">Toca el nombre de una pantalla para verla en el preview. El switch la quita de la app y del flujo.</p>
+            </sc-if>
+
+            <!-- NAVEGACIÓN -->
+            <sc-if value="{{ tabNav }}" hint-placeholder-val="{{ false }}">
+              <div style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.38);margin-bottom:14px;">Patrón de navegación</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                <button onClick="{{ onNavTab }}" style="cursor:pointer;font-family:'Sora',sans-serif;background:{{ navTabBg }};border:1px solid {{ navTabBord }};border-radius:16px;padding:14px;color:#FFFFFF;text-align:left;transition:all 0.2s;">
+                  <svg width="44" height="60" viewBox="0 0 44 60" style="display:block;margin-bottom:10px;"><rect x="1" y="1" width="42" height="58" rx="8" fill="none" stroke="rgba(255,255,255,0.3)"></rect><rect x="6" y="48" width="32" height="6" rx="3" fill="{{ accApp }}"></rect><rect x="6" y="8" width="32" height="10" rx="3" fill="rgba(255,255,255,0.14)"></rect></svg>
+                  <div style="font-size:13px;font-weight:600;">Tab bar</div>
+                  <div style="font-size:11px;color:rgba(255,255,255,0.45);margin-top:3px;">Barra inferior, ideal móvil</div>
+                </button>
+                <button onClick="{{ onNavDrawer }}" style="cursor:pointer;font-family:'Sora',sans-serif;background:{{ navDrBg }};border:1px solid {{ navDrBord }};border-radius:16px;padding:14px;color:#FFFFFF;text-align:left;transition:all 0.2s;">
+                  <svg width="44" height="60" viewBox="0 0 44 60" style="display:block;margin-bottom:10px;"><rect x="1" y="1" width="42" height="58" rx="8" fill="none" stroke="rgba(255,255,255,0.3)"></rect><rect x="6" y="8" width="14" height="3" rx="1.5" fill="{{ accApp }}"></rect><rect x="6" y="14" width="14" height="3" rx="1.5" fill="{{ accApp }}"></rect><rect x="6" y="20" width="14" height="3" rx="1.5" fill="{{ accApp }}"></rect></svg>
+                  <div style="font-size:13px;font-weight:600;">Hamburguesa</div>
+                  <div style="font-size:11px;color:rgba(255,255,255,0.45);margin-top:3px;">Menú lateral desplegable</div>
+                </button>
+              </div>
+              <div style="display:flex;align-items:center;gap:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.09);border-radius:14px;padding:13px 14px;margin-top:12px;">
+                <div style="flex:1;">
+                  <div style="font-size:13px;">Botón compose (FAB)</div>
+                  <div style="font-size:11px;color:rgba(255,255,255,0.42);margin-top:2px;">Acción flotante para crear / redactar</div>
+                </div>
+                <button onClick="{{ onFab }}" style="cursor:pointer;width:38px;height:21px;border-radius:100px;border:none;background:{{ fabSwBg }};position:relative;transition:background 0.2s;">
+                  <span style="position:absolute;top:2.5px;left:2.5px;width:16px;height:16px;border-radius:50%;background:#FFFFFF;transform:translateX({{ fabSwTx }});transition:transform 0.22s;"></span>
+                </button>
+              </div>
+            </sc-if>
+
+            <!-- ESTILO -->
+            <sc-if value="{{ tabEstilo }}" hint-placeholder-val="{{ false }}">
+              <div style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.38);margin-bottom:12px;">Tema</div>
+              <div style="display:flex;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:100px;padding:3px;width:fit-content;">
+                <button onClick="{{ onTemaOscuro }}" style="cursor:pointer;border:none;font-family:'Sora',sans-serif;font-size:12px;padding:6px 18px;border-radius:100px;background:{{ temaOscBg }};color:{{ temaOscCol }};transition:all 0.2s;">Oscuro</button>
+                <button onClick="{{ onTemaClaro }}" style="cursor:pointer;border:none;font-family:'Sora',sans-serif;font-size:12px;padding:6px 18px;border-radius:100px;background:{{ temaClaBg }};color:{{ temaClaCol }};transition:all 0.2s;">Claro</button>
+              </div>
+              <div style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.38);margin:22px 0 12px;">Color de acento</div>
+              <div style="display:flex;gap:9px;flex-wrap:wrap;">
+                <sc-for list="{{ acentosOpts }}" as="ac" hint-placeholder-count="8">
+                  <button onClick="{{ onAcento }}" data-id="{{ ac.c }}" style="cursor:pointer;width:30px;height:30px;border-radius:50%;background:{{ ac.c }};border:2px solid {{ ac.ring }};box-shadow:{{ ac.glow }};transition:transform 0.15s;" style-hover="transform:scale(1.15);"></button>
+                </sc-for>
+              </div>
+              <div style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.38);margin:22px 0 12px;">Tipografía</div>
+              <div style="display:flex;flex-direction:column;gap:7px;">
+                <sc-for list="{{ fuentesOpts }}" as="fu" hint-placeholder-count="5">
+                  <button onClick="{{ onFuente }}" data-id="{{ fu.f }}" style="cursor:pointer;display:flex;align-items:center;gap:12px;background:{{ fu.bg }};border:1px solid {{ fu.bord }};border-radius:13px;padding:10px 14px;color:#FFFFFF;text-align:left;transition:all 0.2s;">
+                    <span style="font-family:'{{ fu.f }}',sans-serif;font-size:19px;font-weight:600;width:34px;">Ag</span>
+                    <span style="font-family:'Sora',sans-serif;font-size:12.5px;color:rgba(255,255,255,0.75);">{{ fu.f }}</span>
+                    <span style="margin-left:auto;font-size:11px;color:{{ fu.check }};">✓</span>
+                  </button>
+                </sc-for>
+              </div>
+              <div style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.38);margin:22px 0 10px;">Radio de esquinas · {{ radLabel }}</div>
+              <input type="range" min="0" max="28" step="2" value="{{ radVal }}" onChange="{{ onRadio }}" style="width:100%;accent-color:#FFFFFF;">
+            </sc-if>
+
+            <!-- EFECTOS -->
+            <sc-if value="{{ tabEfectos }}" hint-placeholder-val="{{ false }}">
+              <div style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.38);margin-bottom:12px;">Material de superficie</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;">
+                <sc-for list="{{ efectoOpts }}" as="ef" hint-placeholder-count="3">
+                  <button onClick="{{ onEfecto }}" data-id="{{ ef.id }}" style="cursor:pointer;font-family:'Sora',sans-serif;background:{{ ef.bg }};border:1px solid {{ ef.bord }};border-radius:14px;padding:11px 10px;color:#FFFFFF;transition:all 0.2s;">
+                    <div style="height:34px;border-radius:9px;background:{{ ef.demo }};border:1px solid {{ ef.demoBord }};box-shadow:{{ ef.demoGlow }};backdrop-filter:blur(8px);margin-bottom:8px;"></div>
+                    <div style="font-size:11.5px;">{{ ef.n }}</div>
+                  </button>
+                </sc-for>
+              </div>
+              <div style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.38);margin:22px 0 12px;">Animaciones</div>
+              <div style="display:flex;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:100px;padding:3px;width:fit-content;">
+                <sc-for list="{{ animOpts }}" as="an" hint-placeholder-count="3">
+                  <button onClick="{{ onAnim }}" data-id="{{ an.id }}" style="cursor:pointer;border:none;font-family:'Sora',sans-serif;font-size:12px;padding:6px 15px;border-radius:100px;background:{{ an.bg }};color:{{ an.col }};transition:all 0.2s;">{{ an.n }}</button>
+                </sc-for>
+              </div>
+              <div style="display:flex;align-items:center;gap:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.09);border-radius:14px;padding:13px 14px;margin-top:18px;">
+                <div style="flex:1;">
+                  <div style="font-size:13px;">Vibración háptica</div>
+                  <div style="font-size:11px;color:rgba(255,255,255,0.42);margin-top:2px;">Feedback táctil en taps y confirmaciones</div>
+                </div>
+                <button onClick="{{ onHaptica }}" style="cursor:pointer;width:38px;height:21px;border-radius:100px;border:none;background:{{ hapSwBg }};position:relative;transition:background 0.2s;">
+                  <span style="position:absolute;top:2.5px;left:2.5px;width:16px;height:16px;border-radius:50%;background:#FFFFFF;transform:translateX({{ hapSwTx }});transition:transform 0.22s;"></span>
+                </button>
+              </div>
+              <p style="font-size:11.5px;color:rgba(255,255,255,0.35);line-height:1.6;margin:16px 0 0;">Cristal = translucidez con desenfoque. Neón = bordes con brillo del acento. Las animaciones aplican al cambiar de pantalla en el preview.</p>
+            </sc-if>
+
+            <!-- ROLES -->
+            <sc-if value="{{ tabRoles }}" hint-placeholder-val="{{ false }}">
+              <div style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.38);margin-bottom:12px;">Roles de la app</div>
+              <div style="display:flex;gap:7px;flex-wrap:wrap;">
+                <sc-for list="{{ rolesOpts }}" as="ro" hint-placeholder-count="8">
+                  <button onClick="{{ onRol }}" data-id="{{ ro.n }}" style="cursor:pointer;font-family:'Sora',sans-serif;font-size:12px;padding:8px 15px;border-radius:100px;background:{{ ro.bg }};color:{{ ro.col }};border:1px solid {{ ro.bord }};transition:all 0.2s;">{{ ro.n }}</button>
+                </sc-for>
+              </div>
+              <div style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.38);margin:24px 0 12px;">Permisos por rol</div>
+              <div style="display:flex;flex-direction:column;gap:8px;">
+                <sc-for list="{{ rolesPerm }}" as="rp" hint-placeholder-count="3">
+                  <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.09);border-radius:13px;padding:12px 14px;">
+                    <div style="font-size:13px;font-weight:600;color:{{ accApp }};">{{ rp.n }}</div>
+                    <div style="font-size:11.5px;color:rgba(255,255,255,0.5);line-height:1.55;margin-top:4px;">{{ rp.d }}</div>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-if>
+
+            <!-- FEATURES -->
+            <sc-if value="{{ tabFeatures }}" hint-placeholder-val="{{ false }}">
+              <div style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.38);margin-bottom:14px;">Features · {{ nFeatsOn }} activas</div>
+              <div style="display:flex;flex-direction:column;gap:8px;">
+                <sc-for list="{{ featsOpts }}" as="ft" hint-placeholder-count="6">
+                  <div style="display:flex;align-items:center;gap:12px;background:{{ ft.bg }};border:1px solid {{ ft.bord }};border-radius:14px;padding:12px 14px;transition:all 0.2s;">
+                    <div style="flex:1;">
+                      <div style="font-size:13px;">{{ ft.n }}</div>
+                      <div style="font-size:11px;color:rgba(255,255,255,0.42);margin-top:2px;">{{ ft.d }}</div>
+                    </div>
+                    <button onClick="{{ onFeature }}" data-id="{{ ft.id }}" style="cursor:pointer;width:38px;height:21px;border-radius:100px;border:none;background:{{ ft.swBg }};position:relative;transition:background 0.2s;flex-shrink:0;">
+                      <span style="position:absolute;top:2.5px;left:2.5px;width:16px;height:16px;border-radius:50%;background:#FFFFFF;transform:translateX({{ ft.swTx }});transition:transform 0.22s;"></span>
+                    </button>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-if>
+
+            <!-- FLUJO -->
+            <sc-if value="{{ tabFlujo }}" hint-placeholder-val="{{ false }}">
+              <div style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.38);margin-bottom:12px;">Diagrama de flujo</div>
+              <p style="font-size:12.5px;color:rgba(255,255,255,0.55);line-height:1.65;margin:0 0 16px;">El diagrama se genera solo a partir de las pantallas activas y sus conexiones. Arrastra los nodos para acomodarlo a tu gusto — las posiciones se guardan.</p>
+              <button onClick="{{ onRegen }}" style="cursor:pointer;font-family:'Sora',sans-serif;font-size:12.5px;padding:9px 18px;border-radius:100px;background:rgba(255,255,255,0.06);color:#FFFFFF;border:1px solid rgba(255,255,255,0.15);transition:all 0.2s;" style-hover="border-color:rgba(255,255,255,0.4);">↺ Reordenar automáticamente</button>
+              <div style="margin-top:20px;display:flex;flex-direction:column;gap:8px;">
+                <div style="display:flex;align-items:center;gap:10px;font-size:11.5px;color:rgba(255,255,255,0.5);"><span style="width:22px;height:2px;background:{{ accApp }};display:inline-block;"></span>Flujo principal (desde inicio)</div>
+                <div style="display:flex;align-items:center;gap:10px;font-size:11.5px;color:rgba(255,255,255,0.5);"><span style="width:22px;height:0;border-top:2px dashed rgba(255,255,255,0.35);display:inline-block;"></span>Conexión secundaria</div>
+              </div>
+            </sc-if>
+          </div>
+        </aside>
+
+        <!-- Área principal -->
+        <main style="flex:1;min-width:0;display:flex;align-items:center;justify-content:center;position:relative;background:radial-gradient(90% 100% at 50% 0%, rgba(255,255,255,0.035) 0%, transparent 55%);overflow:auto;">
+
+          <!-- CANVAS DE FLUJO -->
+          <sc-if value="{{ tabFlujo }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,0.09) 1px, transparent 1px);background-size:26px 26px;">
+              <svg viewBox="0 0 1100 640" style="width:100%;height:100%;touch-action:none;" onPointerMove="{{ onLienzoMove }}" onPointerUp="{{ onLienzoUp }}" onPointerLeave="{{ onLienzoUp }}">
+                <sc-for list="{{ aristas }}" as="ar" hint-placeholder-count="3">
+                  <path d="{{ ar.d }}" fill="none" stroke="{{ ar.col }}" stroke-width="1.6" stroke-dasharray="{{ ar.dash }}"></path>
+                </sc-for>
+                <sc-for list="{{ nodos }}" as="no" hint-placeholder-count="4">
+                  <g transform="{{ no.tr }}" data-id="{{ no.id }}" onPointerDown="{{ onNodoDown }}" style="cursor:grab;">
+                    <rect width="158" height="56" rx="15" fill="rgba(12,12,14,0.95)" stroke="{{ no.bord }}" stroke-width="{{ no.sw }}"></rect>
+                    <circle cx="22" cy="28" r="4" fill="{{ no.dot }}"></circle>
+                    <text x="38" y="25" fill="#FFFFFF" font-size="13" font-family="Sora, sans-serif" font-weight="600">{{ no.n }}</text>
+                    <text x="38" y="41" fill="rgba(255,255,255,0.42)" font-size="10" font-family="Sora, sans-serif">{{ no.tipo }}</text>
+                  </g>
+                </sc-for>
+              </svg>
+            </div>
+          </sc-if>
+
+          <!-- PREVIEW DEL DISPOSITIVO -->
+          <sc-if value="{{ esPreview }}" hint-placeholder-val="{{ true }}">
+            <div style="padding:26px;display:flex;align-items:center;justify-content:center;">
+              <div data-screen-label="{{ etiqueta }}" style="width:{{ frW }};height:{{ frH }};border-radius:{{ frRad }};border:1px solid rgba(255,255,255,0.16);background:{{ bgApp }};position:relative;overflow:hidden;box-shadow:0 40px 120px -40px {{ accApp }}30, 0 0 0 8px rgba(255,255,255,0.04);font-family:{{ fontApp }};flex-shrink:0;">
+
+                <!-- chrome móvil -->
+                <sc-if value="{{ devMovil }}" hint-placeholder-val="{{ true }}">
+                  <div style="position:absolute;top:0;left:0;right:0;height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;z-index:30;color:{{ txtApp }};">
+                    <span style="font-size:13px;font-weight:600;font-family:{{ fontApp }};">9:41</span>
+                    <span style="position:absolute;left:50%;transform:translateX(-50%);top:10px;width:88px;height:24px;border-radius:100px;background:#000000;border:1px solid rgba(255,255,255,0.1);"></span>
+                    <svg width="46" height="12" viewBox="0 0 46 12" fill="{{ txtApp }}"><rect x="0" y="6" width="3" height="6" rx="1"></rect><rect x="5" y="4" width="3" height="8" rx="1"></rect><rect x="10" y="2" width="3" height="10" rx="1"></rect><rect x="15" y="0" width="3" height="12" rx="1"></rect><rect x="24" y="1" width="18" height="10" rx="3" fill="none" stroke="{{ txtApp }}" stroke-width="1.2"></rect><rect x="26" y="3" width="11" height="6" rx="1.5"></rect><rect x="43" y="4" width="2" height="4" rx="1"></rect></svg>
+                  </div>
+                </sc-if>
+
+                <!-- chrome escritorio -->
+                <sc-if value="{{ devEsc }}" hint-placeholder-val="{{ false }}">
+                  <div style="position:absolute;top:0;left:0;right:0;height:42px;display:flex;align-items:center;gap:7px;padding:0 16px;border-bottom:1px solid {{ bordApp }};z-index:30;">
+                    <span style="width:11px;height:11px;border-radius:50%;background:#FF5F57;"></span>
+                    <span style="width:11px;height:11px;border-radius:50%;background:#FEBC2E;"></span>
+                    <span style="width:11px;height:11px;border-radius:50%;background:#28C840;"></span>
+                    <span style="margin-left:14px;font-size:11.5px;color:{{ subApp }};background:{{ cardBg }};border:1px solid {{ bordApp }};padding:5px 16px;border-radius:100px;font-family:{{ fontApp }};">{{ urlApp }}</span>
+                    <span style="margin-left:auto;font-size:10px;color:{{ subApp }};border:1px solid {{ bordApp }};padding:3px 9px;border-radius:100px;">PWA instalada</span>
+                  </div>
+                  <div style="position:absolute;left:0;top:42px;bottom:0;width:200px;border-right:1px solid {{ bordApp }};padding:18px 12px;z-index:25;">
+                    <div style="display:flex;align-items:center;gap:9px;padding:0 8px 16px;">
+                      <span style="width:10px;height:10px;border-radius:3px;background:{{ accApp }};display:inline-block;"></span>
+                      <span style="font-size:15px;font-weight:700;color:{{ txtApp }};font-family:{{ fontApp }};">{{ p.n }}</span>
+                    </div>
+                    <sc-for list="{{ navItems }}" as="nv" hint-placeholder-count="4">
+                      <button onClick="{{ onScr }}" data-id="{{ nv.id }}" style="cursor:pointer;display:flex;align-items:center;gap:11px;width:100%;background:{{ nv.dBg }};border:none;border-radius:11px;padding:10px 11px;color:{{ nv.dCol }};font-family:{{ fontApp }};font-size:13px;text-align:left;transition:all 0.2s;margin-bottom:2px;">
+                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="{{ nv.dCol }}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="{{ nv.ic }}"></path></svg>{{ nv.n }}
+                      </button>
+                    </sc-for>
+                  </div>
+                </sc-if>
+
+                <!-- app bar hamburguesa (móvil) -->
+                <sc-if value="{{ barHamb }}" hint-placeholder-val="{{ false }}">
+                  <div style="position:absolute;top:44px;left:0;right:0;height:48px;display:flex;align-items:center;gap:14px;padding:0 18px;z-index:28;">
+                    <button onClick="{{ onDrawer }}" style="cursor:pointer;background:none;border:none;padding:4px;display:flex;flex-direction:column;gap:4.5px;">
+                      <span style="width:19px;height:2px;background:{{ txtApp }};border-radius:2px;display:block;"></span>
+                      <span style="width:13px;height:2px;background:{{ txtApp }};border-radius:2px;display:block;"></span>
+                      <span style="width:19px;height:2px;background:{{ txtApp }};border-radius:2px;display:block;"></span>
+                    </button>
+                    <span style="font-size:16px;font-weight:700;color:{{ txtApp }};font-family:{{ fontApp }};">{{ scr.n }}</span>
+                    <span style="margin-left:auto;width:8px;height:8px;border-radius:50%;background:{{ accApp }};"></span>
+                  </div>
+                </sc-if>
+
+                <!-- contenido -->
+                <div style="position:absolute;top:{{ cTop }};left:{{ cLeft }};right:0;bottom:{{ cBot }};overflow-y:auto;overflow-x:hidden;animation:{{ scrAnim }};" key="{{ scrKey }}">
+
+                  <!-- CHAT -->
+                  <sc-if value="{{ esChat }}" hint-placeholder-val="{{ false }}">
+                    <div style="display:flex;flex-direction:column;height:100%;">
+                      <div style="flex:1;overflow-y:auto;padding:16px 16px 8px;display:flex;flex-direction:column;gap:11px;">
+                        <div style="align-self:center;font-size:10.5px;color:{{ subApp }};letter-spacing:0.08em;text-transform:uppercase;padding:4px 0 8px;">Hoy · cifrado de extremo a extremo</div>
+                        <sc-for list="{{ dMsgs }}" as="ms" hint-placeholder-count="2">
+                          <div style="align-self:{{ ms.al }};max-width:82%;background:{{ ms.bg }};color:{{ ms.col }};border:1px solid {{ ms.bord }};backdrop-filter:{{ cardBlur }};padding:11px 14px;border-radius:{{ radVal }}px;font-size:13.5px;line-height:1.55;font-family:{{ fontApp }};box-shadow:{{ cardGlow }};animation:aparecer 0.3s ease both;">{{ ms.t }}</div>
+                        </sc-for>
+                        <sc-if value="{{ escribiendo }}" hint-placeholder-val="{{ false }}">
+                          <div style="align-self:flex-start;display:flex;gap:5px;padding:13px 16px;background:{{ cardBg }};border:1px solid {{ bordApp }};border-radius:{{ radVal }}px;">
+                            <span style="width:6px;height:6px;border-radius:50%;background:{{ subApp }};animation:pulseDot 1.2s infinite;"></span>
+                            <span style="width:6px;height:6px;border-radius:50%;background:{{ subApp }};animation:pulseDot 1.2s 0.2s infinite;"></span>
+                            <span style="width:6px;height:6px;border-radius:50%;background:{{ subApp }};animation:pulseDot 1.2s 0.4s infinite;"></span>
+                          </div>
+                        </sc-if>
+                      </div>
+                      <div style="padding:8px 14px 0;display:flex;gap:7px;flex-wrap:wrap;">
+                        <sc-for list="{{ dSugs }}" as="sg" hint-placeholder-count="2">
+                          <button onClick="{{ onSugerencia }}" data-id="{{ sg }}" style="cursor:pointer;font-size:11.5px;font-family:{{ fontApp }};color:{{ txtApp }};background:{{ cardBg }};border:1px solid {{ bordApp }};backdrop-filter:{{ cardBlur }};padding:7px 13px;border-radius:100px;transition:border-color 0.2s;" style-hover="border-color:{{ accApp }};">{{ sg }}</button>
+                        </sc-for>
+                      </div>
+                      <div style="padding:12px 14px 14px;">
+                        <div style="display:flex;align-items:center;gap:9px;background:{{ cardBg }};border:1px solid {{ bordApp }};backdrop-filter:{{ cardBlur }};border-radius:100px;padding:7px 8px 7px 18px;box-shadow:{{ cardGlow }};">
+                          <input value="{{ chatVal }}" onChange="{{ onChatInput }}" onKeyDown="{{ onChatKey }}" placeholder="Pregunta lo que sea…" style="flex:1;background:none;border:none;outline:none;color:{{ txtApp }};font-size:13.5px;font-family:{{ fontApp }};min-width:0;">
+                          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="{{ subApp }}" stroke-width="1.8" stroke-linecap="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3zM19 10v2a7 7 0 0 1-14 0v-2M12 19v3"></path></svg>
+                          <button onClick="{{ onChatSend }}" style="cursor:pointer;width:34px;height:34px;border-radius:50%;background:{{ accApp }};border:none;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform 0.15s;" style-hover="transform:scale(1.08);">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="{{ txtOnAcc }}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"></path></svg>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </sc-if>
+
+                  <!-- FEED -->
+                  <sc-if value="{{ esFeed }}" hint-placeholder-val="{{ false }}">
+                    <div style="padding:14px 14px 24px;display:flex;flex-direction:column;gap:11px;">
+                      <sc-for list="{{ dPosts }}" as="po" hint-placeholder-count="3">
+                        <div style="background:{{ cardBg }};border:1px solid {{ bordApp }};backdrop-filter:{{ cardBlur }};border-radius:{{ radVal }}px;padding:15px 16px;box-shadow:{{ cardGlow }};">
+                          <div style="display:flex;align-items:center;gap:10px;">
+                            <span style="width:36px;height:36px;border-radius:50%;background:{{ accTint }};color:{{ accApp }};display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;font-family:{{ fontApp }};">{{ po.ini }}</span>
+                            <div>
+                              <div style="font-size:13px;font-weight:600;color:{{ txtApp }};font-family:{{ fontApp }};">{{ po.a }}</div>
+                              <div style="font-size:11px;color:{{ subApp }};">{{ po.h }}</div>
+                            </div>
+                          </div>
+                          <p style="margin:11px 0 12px;font-size:13.5px;line-height:1.6;color:{{ txtApp }};font-family:{{ fontApp }};text-wrap:pretty;">{{ po.t }}</p>
+                          <div style="display:flex;gap:20px;align-items:center;">
+                            <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:{{ subApp }};"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="{{ accApp }}" stroke-width="1.8"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"></path></svg>{{ po.likes }}</span>
+                            <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:{{ subApp }};"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="{{ subApp }}" stroke-width="1.8"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.5 8.5 0 1 1 16.1-3.8z"></path></svg>{{ po.rep }}</span>
+                            <svg style="margin-left:auto;" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="{{ subApp }}" stroke-width="1.8"><path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7M16 6l-4-4-4 4M12 2v13"></path></svg>
+                          </div>
+                        </div>
+                      </sc-for>
+                    </div>
+                  </sc-if>
+
+                  <!-- GRID -->
+                  <sc-if value="{{ esGrid }}" hint-placeholder-val="{{ false }}">
+                    <div style="padding:14px 14px 24px;">
+                      <div style="font-size:20px;font-weight:700;color:{{ txtApp }};font-family:{{ fontApp }};margin:4px 2px 12px;">{{ gridTitulo }}</div>
+                      <div style="display:flex;align-items:center;gap:9px;background:{{ cardBg }};border:1px solid {{ bordApp }};backdrop-filter:{{ cardBlur }};border-radius:100px;padding:9px 16px;margin-bottom:15px;">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="{{ subApp }}" stroke-width="1.8" stroke-linecap="round"><path d="M21 21l-4.35-4.35M11 18a7 7 0 1 1 0-14 7 7 0 0 1 0 14z"></path></svg>
+                        <span style="font-size:12.5px;color:{{ subApp }};font-family:{{ fontApp }};">Buscar</span>
+                      </div>
+                      <div style="display:grid;grid-template-columns:repeat({{ gridCols }},1fr);gap:11px;">
+                        <sc-for list="{{ dProds }}" as="pr" hint-placeholder-count="4">
+                          <button onClick="{{ onItemTap }}" style="cursor:pointer;text-align:left;background:{{ cardBg }};border:1px solid {{ bordApp }};backdrop-filter:{{ cardBlur }};border-radius:{{ radVal }}px;padding:0;overflow:hidden;box-shadow:{{ cardGlow }};transition:transform 0.2s;" style-hover="transform:translateY(-3px);">
+                            <div style="height:86px;background:linear-gradient(135deg, {{ accApp }}30 0%, {{ accApp }}08 60%);display:flex;align-items:center;justify-content:center;position:relative;">
+                              <span style="font-size:30px;font-weight:700;color:{{ accApp }};opacity:0.5;font-family:{{ fontApp }};">{{ pr.ini }}</span>
+                              <sc-if value="{{ pr.badge }}" hint-placeholder-val="{{ false }}">
+                                <span style="position:absolute;top:8px;right:8px;font-size:9.5px;font-weight:700;background:{{ accApp }};color:{{ txtOnAcc }};padding:3px 8px;border-radius:100px;font-family:{{ fontApp }};">{{ pr.badge }}</span>
+                              </sc-if>
+                            </div>
+                            <div style="padding:10px 12px 12px;">
+                              <div style="font-size:12.5px;font-weight:600;color:{{ txtApp }};font-family:{{ fontApp }};">{{ pr.t }}</div>
+                              <div style="font-size:11px;color:{{ subApp }};margin-top:3px;font-family:{{ fontApp }};">{{ pr.s }}</div>
+                            </div>
+                          </button>
+                        </sc-for>
+                      </div>
+                    </div>
+                  </sc-if>
+
+                  <!-- LIST -->
+                  <sc-if value="{{ esList }}" hint-placeholder-val="{{ false }}">
+                    <div style="padding:14px 14px 24px;display:flex;flex-direction:column;gap:9px;">
+                      <sc-for list="{{ dItems }}" as="it" hint-placeholder-count="3">
+                        <button onClick="{{ onItemTap }}" style="cursor:pointer;text-align:left;display:flex;align-items:center;gap:12px;background:{{ cardBg }};border:1px solid {{ bordApp }};backdrop-filter:{{ cardBlur }};border-radius:{{ radVal }}px;padding:13px 14px;box-shadow:{{ cardGlow }};transition:transform 0.2s;" style-hover="transform:translateX(3px);">
+                          <span style="width:38px;height:38px;border-radius:{{ radSm }}px;background:{{ accTint }};color:{{ accApp }};display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0;font-family:{{ fontApp }};">{{ it.ini }}</span>
+                          <div style="flex:1;min-width:0;">
+                            <div style="font-size:13px;font-weight:600;color:{{ txtApp }};font-family:{{ fontApp }};">{{ it.t }}</div>
+                            <div style="font-size:11.5px;color:{{ subApp }};margin-top:2px;font-family:{{ fontApp }};">{{ it.s }}</div>
+                          </div>
+                          <span style="font-size:12.5px;font-weight:600;color:{{ accApp }};font-family:{{ fontApp }};flex-shrink:0;">{{ it.m }}</span>
+                        </button>
+                      </sc-for>
+                      <sc-if value="{{ listCta }}" hint-placeholder-val="{{ false }}">
+                        <button style="cursor:pointer;margin-top:8px;background:{{ accApp }};color:{{ txtOnAcc }};border:none;border-radius:{{ radVal }}px;padding:14px;font-size:14px;font-weight:700;font-family:{{ fontApp }};transition:transform 0.15s;" style-hover="transform:scale(1.02);">{{ listCta }}</button>
+                      </sc-if>
+                    </div>
+                  </sc-if>
+
+                  <!-- DETAIL -->
+                  <sc-if value="{{ esDetail }}" hint-placeholder-val="{{ false }}">
+                    <div style="padding:14px 14px 24px;">
+                      <div style="height:170px;border-radius:{{ radVal }}px;background:linear-gradient(140deg, {{ accApp }}45 0%, {{ accApp }}0A 70%);border:1px solid {{ bordApp }};display:flex;align-items:flex-end;padding:14px;margin-bottom:16px;">
+                        <span style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:{{ txtApp }};background:{{ cardBg }};backdrop-filter:blur(10px);border:1px solid {{ bordApp }};padding:5px 11px;border-radius:100px;font-family:{{ fontApp }};">{{ scr.datos.s }}</span>
+                      </div>
+                      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">
+                        <h2 style="margin:0;font-size:21px;font-weight:700;color:{{ txtApp }};font-family:{{ fontApp }};line-height:1.2;text-wrap:balance;">{{ scr.datos.t }}</h2>
+                        <span style="font-size:18px;font-weight:700;color:{{ accApp }};font-family:{{ fontApp }};white-space:nowrap;">{{ scr.datos.precio }}</span>
+                      </div>
+                      <p style="font-size:13px;line-height:1.65;color:{{ subApp }};margin:10px 0 14px;font-family:{{ fontApp }};text-wrap:pretty;">{{ scr.datos.desc }}</p>
+                      <div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:18px;">
+                        <sc-for list="{{ dSpecs }}" as="sp" hint-placeholder-count="3">
+                          <span style="font-size:11px;color:{{ txtApp }};background:{{ cardBg }};border:1px solid {{ bordApp }};padding:6px 12px;border-radius:100px;font-family:{{ fontApp }};">{{ sp }}</span>
+                        </sc-for>
+                      </div>
+                      <button onClick="{{ onItemTap }}" style="cursor:pointer;width:100%;background:{{ accApp }};color:{{ txtOnAcc }};border:none;border-radius:{{ radVal }}px;padding:15px;font-size:14px;font-weight:700;font-family:{{ fontApp }};box-shadow:0 12px 30px -12px {{ accApp }}80;transition:transform 0.15s;" style-hover="transform:scale(1.02);">{{ scr.datos.cta }}</button>
+                    </div>
+                  </sc-if>
+
+                  <!-- DASHBOARD -->
+                  <sc-if value="{{ esDash }}" hint-placeholder-val="{{ false }}">
+                    <div style="padding:20px 14px 24px;">
+                      <div style="text-align:center;padding:8px 0 4px;">
+                        <div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:{{ subApp }};font-family:{{ fontApp }};">{{ scr.n }}</div>
+                        <div style="font-size:38px;font-weight:700;color:{{ txtApp }};font-family:{{ fontApp }};letter-spacing:-0.02em;margin-top:6px;">{{ scr.datos.saldo }}</div>
+                        <span style="display:inline-block;margin-top:8px;font-size:11.5px;font-weight:600;color:{{ accApp }};background:{{ accTint }};padding:5px 13px;border-radius:100px;font-family:{{ fontApp }};">{{ scr.datos.cambio }}</span>
+                      </div>
+                      <div style="display:flex;justify-content:center;gap:18px;padding:18px 0 20px;">
+                        <sc-for list="{{ dAcciones }}" as="ax" hint-placeholder-count="3">
+                          <div style="display:flex;flex-direction:column;align-items:center;gap:7px;">
+                            <button style="cursor:pointer;width:48px;height:48px;border-radius:50%;background:{{ cardBg }};border:1px solid {{ bordApp }};backdrop-filter:{{ cardBlur }};display:flex;align-items:center;justify-content:center;box-shadow:{{ cardGlow }};transition:transform 0.15s;" style-hover="transform:scale(1.1);">
+                              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{ accApp }}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="{{ ax.ic }}"></path></svg>
+                            </button>
+                            <span style="font-size:10.5px;color:{{ subApp }};font-family:{{ fontApp }};">{{ ax.n }}</span>
+                          </div>
+                        </sc-for>
+                      </div>
+                      <div style="display:flex;flex-direction:column;gap:9px;">
+                        <sc-for list="{{ dMovs }}" as="mv" hint-placeholder-count="3">
+                          <div style="display:flex;align-items:center;gap:12px;background:{{ cardBg }};border:1px solid {{ bordApp }};backdrop-filter:{{ cardBlur }};border-radius:{{ radVal }}px;padding:13px 14px;box-shadow:{{ cardGlow }};">
+                            <span style="width:36px;height:36px;border-radius:{{ radSm }}px;background:{{ accTint }};color:{{ accApp }};display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;font-family:{{ fontApp }};">{{ mv.ini }}</span>
+                            <div style="flex:1;">
+                              <div style="font-size:13px;font-weight:600;color:{{ txtApp }};font-family:{{ fontApp }};">{{ mv.t }}</div>
+                              <div style="font-size:11px;color:{{ subApp }};margin-top:2px;font-family:{{ fontApp }};">{{ mv.s }}</div>
+                            </div>
+                            <span style="font-size:13px;font-weight:700;color:{{ txtApp }};font-family:{{ fontApp }};">{{ mv.m }}</span>
+                          </div>
+                        </sc-for>
+                      </div>
+                    </div>
+                  </sc-if>
+
+                  <!-- PLAYER -->
+                  <sc-if value="{{ esPlayer }}" hint-placeholder-val="{{ false }}">
+                    <div style="padding:22px 20px 24px;display:flex;flex-direction:column;align-items:center;">
+                      <div style="width:76%;max-width:260px;aspect-ratio:1;border-radius:{{ radVal }}px;background:radial-gradient(110% 110% at 30% 20%, {{ accApp }}55 0%, {{ accApp }}10 55%, transparent 100%),{{ cardBg }};border:1px solid {{ bordApp }};box-shadow:0 30px 70px -30px {{ accApp }}66;animation:respira 6s ease-in-out infinite;display:flex;align-items:center;justify-content:center;">
+                        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="{{ accApp }}" stroke-width="1.3" opacity="0.75"><path d="M9 18V5l12-2v13M9 18a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM21 16a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"></path></svg>
+                      </div>
+                      <div style="text-align:center;margin:18px 0 4px;">
+                        <div style="font-size:18px;font-weight:700;color:{{ txtApp }};font-family:{{ fontApp }};">{{ scr.datos.t }}</div>
+                        <div style="font-size:12.5px;color:{{ subApp }};margin-top:4px;font-family:{{ fontApp }};">{{ scr.datos.s }}</div>
+                      </div>
+                      <div style="width:100%;height:4px;border-radius:4px;background:{{ bordApp }};margin:14px 0 16px;position:relative;">
+                        <span style="position:absolute;left:0;top:0;bottom:0;width:62%;border-radius:4px;background:{{ accApp }};"></span>
+                        <span style="position:absolute;left:62%;top:50%;transform:translate(-50%,-50%);width:12px;height:12px;border-radius:50%;background:{{ accApp }};box-shadow:0 0 12px {{ accApp }}99;"></span>
+                      </div>
+                      <div style="display:flex;align-items:center;gap:26px;">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="{{ txtApp }}"><path d="M19 20L9 12l10-8v16zM7 19V5H5v14h2z"></path></svg>
+                        <button style="cursor:pointer;width:60px;height:60px;border-radius:50%;background:{{ accApp }};border:none;display:flex;align-items:center;justify-content:center;box-shadow:0 14px 34px -12px {{ accApp }};transition:transform 0.15s;" style-hover="transform:scale(1.08);">
+                          <svg width="22" height="22" viewBox="0 0 24 24" fill="{{ txtOnAcc }}"><path d="M8 5h3v14H8zM13 5h3v14h-3z"></path></svg>
+                        </button>
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="{{ txtApp }}"><path d="M5 4l10 8-10 8V4zM17 5v14h2V5h-2z"></path></svg>
+                      </div>
+                      <div style="width:100%;margin-top:22px;display:flex;flex-direction:column;gap:8px;">
+                        <sc-for list="{{ dCola }}" as="cl" hint-placeholder-count="3">
+                          <div style="display:flex;align-items:center;gap:11px;background:{{ cardBg }};border:1px solid {{ bordApp }};backdrop-filter:{{ cardBlur }};border-radius:{{ radSm }}px;padding:10px 13px;">
+                            <div style="flex:1;">
+                              <div style="font-size:12.5px;font-weight:600;color:{{ txtApp }};font-family:{{ fontApp }};">{{ cl.t }}</div>
+                              <div style="font-size:10.5px;color:{{ subApp }};margin-top:1px;font-family:{{ fontApp }};">{{ cl.s }}</div>
+                            </div>
+                            <span style="font-size:11px;color:{{ subApp }};font-family:{{ fontApp }};">{{ cl.d }}</span>
+                          </div>
+                        </sc-for>
+                      </div>
+                    </div>
+                  </sc-if>
+
+                  <!-- MAP -->
+                  <sc-if value="{{ esMap }}" hint-placeholder-val="{{ false }}">
+                    <div style="position:relative;height:100%;min-height:420px;">
+                      <div style="position:absolute;inset:0;background:radial-gradient(60% 40% at 70% 20%, {{ accApp }}14 0%, transparent 60%),repeating-linear-gradient(0deg, transparent 0 34px, {{ bordApp }} 34px 35px),repeating-linear-gradient(90deg, transparent 0 34px, {{ bordApp }} 34px 35px),{{ bgApp }};"></div>
+                      <svg viewBox="0 0 340 300" style="position:absolute;top:0;left:0;width:100%;height:60%;">
+                        <path d="M60 240 C 110 210, 130 140, 190 120 S 280 80, 290 55" fill="none" stroke="{{ accApp }}" stroke-width="3" stroke-linecap="round" stroke-dasharray="10 8" style="animation:rutaDash 1.6s linear infinite;"></path>
+                        <circle cx="60" cy="240" r="8" fill="{{ accApp }}" opacity="0.25"></circle>
+                        <circle cx="60" cy="240" r="4" fill="{{ accApp }}"></circle>
+                        <circle cx="290" cy="55" r="8" fill="{{ accApp }}" opacity="0.25"></circle>
+                        <circle cx="290" cy="55" r="4" fill="{{ accApp }}"></circle>
+                      </svg>
+                      <div style="position:absolute;left:12px;right:12px;bottom:12px;background:{{ sheetBg }};backdrop-filter:blur(20px);border:1px solid {{ bordApp }};border-radius:{{ radVal }}px;padding:16px;box-shadow:0 -10px 40px rgba(0,0,0,0.3);">
+                        <div style="width:36px;height:4px;border-radius:4px;background:{{ bordApp }};margin:0 auto 13px;"></div>
+                        <div style="display:flex;align-items:center;gap:10px;margin-bottom:5px;">
+                          <span style="width:8px;height:8px;border-radius:50%;background:{{ accApp }};"></span>
+                          <span style="font-size:12.5px;color:{{ txtApp }};font-family:{{ fontApp }};">{{ scr.datos.origen }}</span>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:10px;margin-bottom:13px;">
+                          <span style="width:8px;height:8px;border-radius:2px;background:{{ txtApp }};"></span>
+                          <span style="font-size:12.5px;color:{{ txtApp }};font-family:{{ fontApp }};">{{ scr.datos.destino }}</span>
+                          <span style="margin-left:auto;font-size:11px;font-weight:700;color:{{ accApp }};background:{{ accTint }};padding:4px 10px;border-radius:100px;font-family:{{ fontApp }};">{{ scr.datos.eta }}</span>
+                        </div>
+                        <div style="display:flex;flex-direction:column;gap:7px;">
+                          <sc-for list="{{ dOpc }}" as="op" hint-placeholder-count="2">
+                            <div style="display:flex;align-items:center;gap:11px;background:{{ op.bg }};border:1px solid {{ op.bord }};border-radius:{{ radSm }}px;padding:10px 13px;">
+                              <div style="flex:1;">
+                                <div style="font-size:12.5px;font-weight:600;color:{{ txtApp }};font-family:{{ fontApp }};">{{ op.t }}</div>
+                                <div style="font-size:10.5px;color:{{ subApp }};margin-top:1px;font-family:{{ fontApp }};">{{ op.s }}</div>
+                              </div>
+                              <span style="font-size:13px;font-weight:700;color:{{ txtApp }};font-family:{{ fontApp }};">{{ op.p }}</span>
+                            </div>
+                          </sc-for>
+                        </div>
+                        <button style="cursor:pointer;width:100%;margin-top:12px;background:{{ accApp }};color:{{ txtOnAcc }};border:none;border-radius:{{ radSm }}px;padding:13px;font-size:13.5px;font-weight:700;font-family:{{ fontApp }};transition:transform 0.15s;" style-hover="transform:scale(1.02);">Confirmar</button>
+                      </div>
+                    </div>
+                  </sc-if>
+
+                  <!-- CALENDAR -->
+                  <sc-if value="{{ esCal }}" hint-placeholder-val="{{ false }}">
+                    <div style="padding:16px 14px 24px;">
+                      <div style="font-size:17px;font-weight:700;color:{{ txtApp }};font-family:{{ fontApp }};margin:2px 2px 14px;">{{ scr.datos.titulo }}</div>
+                      <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:16px;">
+                        <sc-for list="{{ dDias }}" as="di" hint-placeholder-count="7">
+                          <div style="text-align:center;padding:9px 0 10px;border-radius:{{ radSm }}px;background:{{ di.bg }};border:1px solid {{ di.bord }};">
+                            <div style="font-size:9.5px;color:{{ di.subCol }};font-family:{{ fontApp }};text-transform:uppercase;">{{ di.d }}</div>
+                            <div style="font-size:14px;font-weight:700;color:{{ di.col }};font-family:{{ fontApp }};margin-top:2px;">{{ di.num }}</div>
+                          </div>
+                        </sc-for>
+                      </div>
+                      <div style="display:flex;flex-direction:column;gap:8px;">
+                        <sc-for list="{{ dSlots }}" as="sl" hint-placeholder-count="4">
+                          <div style="display:flex;align-items:center;gap:13px;background:{{ cardBg }};border:1px solid {{ bordApp }};backdrop-filter:{{ cardBlur }};border-radius:{{ radSm }}px;padding:12px 14px;opacity:{{ sl.op }};">
+                            <span style="font-size:13px;font-weight:700;color:{{ txtApp }};font-family:{{ fontApp }};width:44px;">{{ sl.h }}</span>
+                            <span style="flex:1;font-size:12.5px;color:{{ subApp }};font-family:{{ fontApp }};">{{ sl.t }}</span>
+                            <span style="font-size:10.5px;font-weight:700;color:{{ sl.chipCol }};background:{{ sl.chipBg }};padding:4px 10px;border-radius:100px;font-family:{{ fontApp }};">{{ sl.chip }}</span>
+                          </div>
+                        </sc-for>
+                      </div>
+                      <button style="cursor:pointer;width:100%;margin-top:14px;background:{{ accApp }};color:{{ txtOnAcc }};border:none;border-radius:{{ radVal }}px;padding:14px;font-size:14px;font-weight:700;font-family:{{ fontApp }};transition:transform 0.15s;" style-hover="transform:scale(1.02);">{{ scr.datos.cta }}</button>
+                    </div>
+                  </sc-if>
+
+                  <!-- PROFILE -->
+                  <sc-if value="{{ esProfile }}" hint-placeholder-val="{{ false }}">
+                    <div style="padding:26px 14px 24px;display:flex;flex-direction:column;align-items:center;">
+                      <div style="width:72px;height:72px;border-radius:50%;background:{{ accTint }};border:1px solid {{ accApp }}44;color:{{ accApp }};display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:700;font-family:{{ fontApp }};">{{ perfilIni }}</div>
+                      <div style="font-size:17px;font-weight:700;color:{{ txtApp }};font-family:{{ fontApp }};margin-top:12px;">{{ scr.datos.nombre }}</div>
+                      <div style="font-size:12px;color:{{ subApp }};margin-top:3px;font-family:{{ fontApp }};">{{ scr.datos.correo }}</div>
+                      <div style="width:100%;margin-top:20px;display:flex;flex-direction:column;gap:7px;">
+                        <sc-for list="{{ dMenu }}" as="me" hint-placeholder-count="4">
+                          <button style="cursor:pointer;display:flex;align-items:center;gap:12px;background:{{ cardBg }};border:1px solid {{ bordApp }};backdrop-filter:{{ cardBlur }};border-radius:{{ radSm }}px;padding:13px 15px;color:{{ txtApp }};font-family:{{ fontApp }};font-size:13px;text-align:left;transition:transform 0.15s;" style-hover="transform:translateX(3px);">
+                            <span style="flex:1;">{{ me.t }}</span>
+                            <span style="color:{{ subApp }};">›</span>
+                          </button>
+                        </sc-for>
+                      </div>
+                      <button style="cursor:pointer;background:none;border:none;color:{{ subApp }};font-size:12px;font-family:{{ fontApp }};margin-top:18px;text-decoration:underline;text-underline-offset:3px;">Cerrar sesión</button>
+                    </div>
+                  </sc-if>
+
+                  <!-- LOGIN -->
+                  <sc-if value="{{ esLogin }}" hint-placeholder-val="{{ false }}">
+                    <div style="padding:40px 22px 24px;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:center;">
+                      <span style="width:14px;height:14px;border-radius:4px;background:{{ accApp }};box-shadow:0 0 24px {{ accApp }}88;display:block;"></span>
+                      <div style="font-size:21px;font-weight:700;color:{{ txtApp }};font-family:{{ fontApp }};margin-top:16px;">{{ scr.datos.titulo }}</div>
+                      <div style="font-size:12.5px;color:{{ subApp }};margin-top:4px;font-family:{{ fontApp }};">{{ scr.datos.sub }}</div>
+                      <div style="width:100%;margin-top:24px;display:flex;flex-direction:column;gap:10px;">
+                        <input placeholder="Correo" style="background:{{ cardBg }};border:1px solid {{ bordApp }};backdrop-filter:{{ cardBlur }};border-radius:{{ radSm }}px;padding:13px 15px;color:{{ txtApp }};font-size:13px;font-family:{{ fontApp }};outline:none;">
+                        <input placeholder="Contraseña" type="password" style="background:{{ cardBg }};border:1px solid {{ bordApp }};backdrop-filter:{{ cardBlur }};border-radius:{{ radSm }}px;padding:13px 15px;color:{{ txtApp }};font-size:13px;font-family:{{ fontApp }};outline:none;">
+                        <button style="cursor:pointer;background:{{ accApp }};color:{{ txtOnAcc }};border:none;border-radius:{{ radSm }}px;padding:14px;font-size:13.5px;font-weight:700;font-family:{{ fontApp }};margin-top:4px;transition:transform 0.15s;" style-hover="transform:scale(1.02);">Entrar</button>
+                      </div>
+                      <sc-if value="{{ featBio }}" hint-placeholder-val="{{ false }}">
+                        <div style="display:flex;align-items:center;gap:8px;margin-top:16px;font-size:11.5px;color:{{ subApp }};font-family:{{ fontApp }};">
+                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="{{ accApp }}" stroke-width="1.6"><path d="M12 11a4 4 0 0 1 4 4v2a4 4 0 0 1-8 0v-2a4 4 0 0 1 4-4zM12 3a8 8 0 0 1 8 8v1M4 12v-1a8 8 0 0 1 4-6.9"></path></svg>
+                          Entrar con Face ID
+                        </div>
+                      </sc-if>
+                    </div>
+                  </sc-if>
+                </div>
+
+                <!-- tab bar móvil -->
+                <sc-if value="{{ barTabs }}" hint-placeholder-val="{{ false }}">
+                  <div style="position:absolute;left:10px;right:10px;bottom:10px;height:60px;border-radius:100px;background:{{ tabbarBg }};backdrop-filter:blur(24px);border:1px solid {{ bordApp }};display:flex;align-items:center;justify-content:space-around;padding:0 8px;z-index:30;box-shadow:0 14px 34px rgba(0,0,0,0.35);">
+                    <sc-for list="{{ navItems }}" as="nv" hint-placeholder-count="4">
+                      <button onClick="{{ onScr }}" data-id="{{ nv.id }}" style="cursor:pointer;background:{{ nv.tBg }};border:none;border-radius:100px;padding:8px 13px;display:flex;flex-direction:column;align-items:center;gap:3px;transition:all 0.22s;min-width:44px;">
+                        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="{{ nv.tCol }}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="{{ nv.ic }}"></path></svg>
+                        <span style="font-size:8.5px;color:{{ nv.tCol }};font-family:{{ fontApp }};letter-spacing:0.02em;">{{ nv.n }}</span>
+                      </button>
+                    </sc-for>
+                  </div>
+                </sc-if>
+
+                <!-- drawer móvil -->
+                <sc-if value="{{ drawerOpen }}" hint-placeholder-val="{{ false }}">
+                  <div onClick="{{ onDrawer }}" style="position:absolute;inset:0;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);z-index:40;animation:aparecer 0.25s ease;"></div>
+                  <div style="position:absolute;left:0;top:0;bottom:0;width:230px;background:{{ drawerBg }};backdrop-filter:blur(28px);border-right:1px solid {{ bordApp }};z-index:41;padding:56px 12px 16px;animation:fadeUp 0.3s cubic-bezier(0.2,0.7,0.2,1);">
+                    <div style="display:flex;align-items:center;gap:9px;padding:0 10px 18px;">
+                      <span style="width:10px;height:10px;border-radius:3px;background:{{ accApp }};display:inline-block;"></span>
+                      <span style="font-size:16px;font-weight:700;color:{{ txtApp }};font-family:{{ fontApp }};">{{ p.n }}</span>
+                    </div>
+                    <sc-for list="{{ navItemsAll }}" as="nv" hint-placeholder-count="5">
+                      <button onClick="{{ onScrDrawer }}" data-id="{{ nv.id }}" style="cursor:pointer;display:flex;align-items:center;gap:12px;width:100%;background:{{ nv.dBg }};border:none;border-radius:12px;padding:12px;color:{{ nv.dCol }};font-family:{{ fontApp }};font-size:13.5px;text-align:left;transition:all 0.2s;margin-bottom:3px;">
+                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="{{ nv.dCol }}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="{{ nv.ic }}"></path></svg>{{ nv.n }}
+                      </button>
+                    </sc-for>
+                  </div>
+                </sc-if>
+
+                <!-- FAB compose -->
+                <sc-if value="{{ fabVisible }}" hint-placeholder-val="{{ false }}">
+                  <button onClick="{{ onFabTap }}" style="cursor:pointer;position:absolute;right:16px;bottom:{{ fabBot }};width:54px;height:54px;border-radius:{{ fabRad }};background:{{ accApp }};border:none;display:flex;align-items:center;justify-content:center;z-index:35;box-shadow:0 16px 38px -10px {{ accApp }};transition:transform 0.2s cubic-bezier(0.2,0.7,0.2,1);" style-hover="transform:scale(1.1) rotate(90deg);">
+                    <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="{{ txtOnAcc }}" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>
+                  </button>
+                </sc-if>
+              </div>
+            </div>
+          </sc-if>
+        </main>
+      </div>
+    </section>
+  </sc-if>
+
+  <!-- ══════════ MODAL EXPORTAR ══════════ -->
+  <sc-if value="{{ expOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ onCerrarExp }}" style="position:fixed;inset:0;background:rgba(0,0,0,0.72);backdrop-filter:blur(10px);z-index:90;animation:aparecer 0.2s ease;"></div>
+    <div style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(780px,92vw);max-height:86vh;background:#0A0A0C;border:1px solid rgba(255,255,255,0.14);border-radius:24px;z-index:91;display:flex;flex-direction:column;overflow:hidden;animation:scaleIn 0.3s cubic-bezier(0.2,0.7,0.2,1);">
+      <div style="display:flex;align-items:center;gap:14px;padding:18px 22px;border-bottom:1px solid rgba(255,255,255,0.08);">
+        <div>
+          <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:17px;">Exportar {{ p.n }}</div>
+          <div style="font-size:11.5px;color:rgba(255,255,255,0.42);margin-top:2px;">Especificación completa · frontend + backend · lista para generar código</div>
+        </div>
+        <button onClick="{{ onCerrarExp }}" style="cursor:pointer;margin-left:auto;background:none;border:1px solid rgba(255,255,255,0.16);color:#FFFFFF;width:32px;height:32px;border-radius:50%;font-size:14px;font-family:'Sora',sans-serif;">✕</button>
+      </div>
+      <div style="display:flex;gap:6px;padding:14px 22px 0;">
+        <sc-for list="{{ expTabs }}" as="et" hint-placeholder-count="3">
+          <button onClick="{{ onExpTab }}" data-id="{{ et.id }}" style="cursor:pointer;font-family:'Sora',sans-serif;font-size:12px;padding:8px 16px;border-radius:100px;background:{{ et.bg }};color:{{ et.col }};border:1px solid {{ et.bord }};transition:all 0.2s;">{{ et.n }}</button>
+        </sc-for>
+      </div>
+      <pre style="flex:1;overflow:auto;margin:14px 22px;padding:18px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:14px;font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:11.5px;line-height:1.65;color:rgba(255,255,255,0.82);white-space:pre-wrap;">{{ expTexto }}</pre>
+      <div style="display:flex;align-items:center;gap:10px;padding:0 22px 20px;">
+        <span style="font-size:11px;color:rgba(255,255,255,0.38);margin-right:auto;">Cuando esta config sea la definitiva: haz fork de este archivo y pega el prompt en Claude Code.</span>
+        <button onClick="{{ onDescargar }}" style="cursor:pointer;font-family:'Sora',sans-serif;font-size:12.5px;padding:10px 18px;border-radius:100px;background:none;border:1px solid rgba(255,255,255,0.2);color:#FFFFFF;transition:border-color 0.2s;" style-hover="border-color:rgba(255,255,255,0.5);">↓ Descargar .md</button>
+        <button onClick="{{ onCopiar }}" style="cursor:pointer;font-family:'Sora',sans-serif;font-weight:600;font-size:12.5px;padding:10px 20px;border-radius:100px;background:#FFFFFF;color:#000000;border:none;transition:transform 0.15s;" style-hover="transform:scale(1.04);">{{ copiarTxt }}</button>
+      </div>
+    </div>
+  </sc-if>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;dispositivoInicial&quot;: {&quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;movil&quot;, &quot;escritorio&quot;], &quot;default&quot;: &quot;movil&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Comportamiento&quot;}, &quot;respuestaIA&quot;: {&quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;streaming&quot;, &quot;instantanea&quot;], &quot;default&quot;: &quot;streaming&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Comportamiento&quot;}, &quot;autoguardado&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Comportamiento&quot;}}">
+class Component extends DCLogic {
+  state = {
+    db: null, vista: "cat", sel: null, filtro: "Todas",
+    cfgs: {}, tab: "pantallas", scrId: null, device: null,
+    drawer: false, chatExtra: {}, chatVal: "", escribiendo: false,
+    exp: false, expTab: "resumen", copiado: false,
+    drag: null, animAlt: false, scrKey: 0
+  };
+  timers = [];
+
+  componentDidMount() {
+    import("./plantillas.js").then((m) => {
+      let saved = {};
+      try { saved = JSON.parse(localStorage.getItem("forja-v1") || "{}"); } catch (e) {}
+      this.setState({
+        db: m,
+        cfgs: saved.cfgs || {},
+        vista: saved.vista || "cat",
+        sel: saved.sel || null,
+        scrId: null
+      });
+    });
+  }
+  componentWillUnmount() { this.timers.forEach(clearTimeout); }
+
+  persist() {
+    if (this.props.autoguardado === false) return;
+    const t = setTimeout(() => {
+      try { localStorage.setItem("forja-v1", JSON.stringify({ cfgs: this.state.cfgs, vista: this.state.vista, sel: this.state.sel })); } catch (e) {}
+    }, 100);
+    this.timers.push(t);
+  }
+
+  getP() { return this.state.db.PLANTILLAS.find((p) => p.id === this.state.sel); }
+
+  getCfg(p) {
+    const feats = {};
+    this.state.db.FEATURES_DEF.forEach((f) => { feats[f.id] = p.featOn.includes(f.id); });
+    return Object.assign({
+      nav: p.nav, fab: p.fab, tema: "oscuro", acento: p.acento, fuente: p.fuente,
+      radio: 18, efecto: "cristal", anim: "suaves", haptica: true,
+      off: [], extras: [], roles: p.roles.slice(), feats, pos: {}
+    }, this.state.cfgs[p.id] || {});
+  }
+  setCfg(patch) {
+    const id = this.state.sel;
+    const cfg = Object.assign({}, this.getCfg(this.getP()), patch);
+    this.setState({ cfgs: Object.assign({}, this.state.cfgs, { [id]: cfg }) }, () => this.persist());
+  }
+
+  activas(p, cfg) {
+    const base = p.pantallas.filter((s) => !cfg.off.includes(s.id));
+    const extras = this.state.db.EXTRA_PANTALLAS.filter((e) => cfg.extras.includes(e.id));
+    return base.concat(extras);
+  }
+
+  lum(hex) {
+    const h = hex.replace("#", "");
+    const r = parseInt(h.substr(0, 2), 16), g = parseInt(h.substr(2, 2), 16), b = parseInt(h.substr(4, 2), 16);
+    return (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  }
+
+  tema(cfg) {
+    const acc = cfg.acento, osc = cfg.tema === "oscuro", ef = cfg.efecto;
+    const t = {
+      accApp: acc,
+      accTint: acc + (osc ? "22" : "26"),
+      txtOnAcc: this.lum(acc) > 0.55 ? "#000000" : "#FFFFFF",
+      bgApp: osc ? "#060607" : "#F2F2F5",
+      txtApp: osc ? "#F5F5F7" : "#0B0B0D",
+      subApp: osc ? "rgba(255,255,255,0.55)" : "rgba(0,0,0,0.52)",
+      bordApp: osc ? "rgba(255,255,255,0.11)" : "rgba(0,0,0,0.10)",
+      cardBlur: "none", cardGlow: "none"
+    };
+    if (ef === "cristal") {
+      t.cardBg = osc ? "rgba(255,255,255,0.055)" : "rgba(255,255,255,0.62)";
+      t.cardBlur = "blur(18px)";
+    } else if (ef === "solido") {
+      t.cardBg = osc ? "#141417" : "#FFFFFF";
+    } else {
+      t.cardBg = osc ? "rgba(8,8,11,0.9)" : "rgba(255,255,255,0.9)";
+      t.bordApp = acc + "50";
+      t.cardGlow = "0 0 22px " + acc + "1F";
+    }
+    t.tabbarBg = osc ? "rgba(10,10,12,0.72)" : "rgba(255,255,255,0.75)";
+    t.drawerBg = osc ? "rgba(8,8,10,0.92)" : "rgba(250,250,252,0.95)";
+    t.sheetBg = osc ? "rgba(10,10,13,0.82)" : "rgba(255,255,255,0.85)";
+    return t;
+  }
+
+  scrAnimCss(cfg) {
+    if (cfg.anim === "sin") return "none";
+    const alt = this.state.animAlt;
+    if (cfg.anim === "intensas") return (alt ? "scaleIn" : "scaleIn2") + " 0.5s cubic-bezier(0.2,0.7,0.2,1)";
+    return (alt ? "fadeUp" : "fadeUp2") + " 0.38s cubic-bezier(0.2,0.7,0.2,1)";
+  }
+
+  irA(id) {
+    this.setState({ scrId: id, drawer: false, animAlt: !this.state.animAlt, scrKey: this.state.scrKey + 1 });
+  }
+
+  enviarChat(texto) {
+    const txt = (texto || this.state.chatVal).trim();
+    if (!txt) return;
+    const key = this.state.sel + ":" + (this.state.scrId || "");
+    const prev = this.state.chatExtra[key] || [];
+    const push = (arr) => this.setState({ chatExtra: Object.assign({}, this.state.chatExtra, { [key]: arr }) });
+    push(prev.concat([{ de: "u", t: txt }]));
+    this.setState({ chatVal: "", escribiendo: true });
+    const pool = [
+      "Entendido. Lo preparo ahora mismo — en un segundo te muestro el resultado con los detalles clave.",
+      "Buena pregunta. Respuesta corta: sí. Si quieres te lo desgloso en tres puntos con ejemplos.",
+      "Listo. ¿Lo ajusto con otro tono o lo dejamos así y seguimos con lo siguiente?",
+      "Aquí va un primer borrador. Puedo iterarlo las veces que necesites hasta que quede perfecto."
+    ];
+    const resp = pool[Math.floor(Math.random() * pool.length)];
+    const stream = (this.props.respuestaIA || "streaming") === "streaming";
+    const t1 = setTimeout(() => {
+      if (!stream) {
+        const cur = this.state.chatExtra[key] || [];
+        this.setState({ escribiendo: false });
+        this.setState({ chatExtra: Object.assign({}, this.state.chatExtra, { [key]: cur.concat([{ de: "a", t: resp }]) }) });
+        return;
+      }
+      this.setState({ escribiendo: false });
+      const words = resp.split(" ");
+      let i = 0;
+      const cur = this.state.chatExtra[key] || [];
+      const arr = cur.concat([{ de: "a", t: "" }]);
+      push(arr);
+      const iv = setInterval(() => {
+        i++;
+        if (i > words.length) { clearInterval(iv); return; }
+        const a2 = (this.state.chatExtra[key] || []).slice();
+        a2[a2.length - 1] = { de: "a", t: words.slice(0, i).join(" ") };
+        push(a2);
+      }, 55);
+      this.timers.push(iv);
+    }, 800);
+    this.timers.push(t1);
+  }
+
+  // ── flujo ──
+  autoPos(acts) {
+    const pos = {};
+    acts.forEach((s, i) => {
+      if (i === 0) { pos[s.id] = { x: 70, y: 292 }; return; }
+      const col = Math.floor((i - 1) / 3), row = (i - 1) % 3;
+      pos[s.id] = { x: 360 + col * 320, y: 96 + row * 190 + (col % 2) * 40 };
+    });
+    return pos;
+  }
+  flujoVals(p, cfg, acts, acc) {
+    const auto = this.autoPos(acts);
+    const getPos = (id) => (cfg.pos && cfg.pos[id]) || auto[id] || { x: 500, y: 300 };
+    const nodos = acts.map((s, i) => {
+      const pt = getPos(s.id);
+      return {
+        id: s.id, n: s.n, tipo: s.tipo, tr: "translate(" + pt.x + "," + pt.y + ")",
+        bord: i === 0 ? acc : "rgba(255,255,255,0.22)", sw: i === 0 ? "1.6" : "1",
+        dot: i === 0 ? acc : "rgba(255,255,255,0.35)"
+      };
+    });
+    const edge = (a, b, col, dash) => {
+      const p1 = getPos(a), p2 = getPos(b);
+      const x1 = p1.x + 158, y1 = p1.y + 28, x2 = p2.x, y2 = p2.y + 28;
+      return { d: "M " + x1 + " " + y1 + " C " + (x1 + 70) + " " + y1 + ", " + (x2 - 70) + " " + y2 + ", " + x2 + " " + y2, col, dash };
+    };
+    const aristas = [];
+    const ids = acts.map((s) => s.id);
+    acts.slice(1).forEach((s) => aristas.push(edge(acts[0].id, s.id, acc + "66", "none")));
+    acts.forEach((s) => (s.a || []).forEach((to) => {
+      if (ids.includes(to) && to !== acts[0].id) aristas.push(edge(s.id, to, "rgba(255,255,255,0.3)", "5 5"));
+    }));
+    return { nodos, aristas };
+  }
+
+  // ── export ──
+  campos(m) {
+    const map = {
+      Usuario: "nombre, correo, hashContrasena, rol, avatarUrl, creadoEn",
+      Cliente: "nombre, correo, telefono, direcciones[], creadoEn",
+      Conversacion: "usuarioId, titulo, modelo, creadaEn, actualizadaEn",
+      Mensaje: "conversacionId, rol(user|assistant), contenido, tokens, creadoEn",
+      Producto: "nombre, descripcion, precio, imagenes[], stock, categoriaId",
+      Orden: "usuarioId, items[], subtotal, envio, total, estado, creadaEn",
+      Pago: "ordenId, metodo, monto, estado, proveedorRef, creadoEn",
+      Resena: "usuarioId, recursoId, estrellas, comentario, fotos[], creadaEn",
+      Cita: "clienteId, profesionalId, servicioId, inicio, fin, estado",
+      Wallet: "usuarioId, direccion, redes[], creadaEn",
+      Transaccion: "walletId, tipo, monto, token, hash, estado, creadaEn",
+      Rastreo: "ordenId, lat, lng, estado, actualizadoEn",
+      Curso: "titulo, descripcion, instructorId, modulos[], precio, publicado",
+      Leccion: "moduloId, titulo, videoUrl, duracionSeg, orden",
+      Playlist: "usuarioId, titulo, canciones[], publica, creadaEn",
+      Post: "usuarioId, contenido, adjuntos[], likes, creadoEn"
+    };
+    return map[m] || "nombre, descripcion, estado, creadoEn, actualizadoEn";
+  }
+  buildExport(tipo, p, cfg, acts) {
+    const feats = this.state.db.FEATURES_DEF.filter((f) => cfg.feats[f.id]);
+    const nav = cfg.nav === "tabbar" ? "Tab bar inferior" : "Menú hamburguesa (drawer lateral)";
+    const lineas = [];
+    const L = (s) => lineas.push(s);
+    if (tipo === "resumen") {
+      L("# " + p.n + " — Especificación de PWA");
+      L(p.cat + " · " + p.tag + "\n");
+      L("## Pantallas (" + acts.length + ")");
+      acts.forEach((s, i) => L((i + 1) + ". " + s.n + " — tipo " + s.tipo + (i === 0 ? " (inicio)" : "") + ((s.a || []).length ? " → navega a: " + s.a.join(", ") : "")));
+      L("\n## Navegación");
+      L("- Patrón: " + nav + (cfg.fab ? " + botón compose (FAB)" : ""));
+      L("- Móvil y escritorio (sidebar en desktop)");
+      L("\n## Estilo");
+      L("- Tema: " + cfg.tema + " · Acento: " + cfg.acento);
+      L("- Tipografía: " + cfg.fuente + " · Radio de esquinas: " + cfg.radio + "px");
+      L("- Material: " + cfg.efecto + " · Animaciones: " + cfg.anim + " · Háptica: " + (cfg.haptica ? "sí" : "no"));
+      L("\n## Roles");
+      cfg.roles.forEach((r) => L("- " + r));
+      L("\n## Features activas");
+      feats.forEach((f) => L("- " + f.n + ": " + f.d));
+    } else if (tipo === "backend") {
+      L("# " + p.n + " — Especificación de backend\n");
+      L("## Modelos de datos");
+      p.modelos.forEach((m) => L("- **" + m + "**: " + this.campos(m)));
+      L("\n## Endpoints REST");
+      if (cfg.feats.login) {
+        L("- POST /auth/registro · POST /auth/login · POST /auth/refresh");
+        L("- GET /auth/perfil (JWT)" + (cfg.feats.biometria ? " · POST /auth/webauthn (biometría)" : ""));
+      }
+      p.modelos.forEach((m) => {
+        const pl = m.toLowerCase() + "s";
+        L("- GET/POST /api/" + pl + " · GET/PATCH/DELETE /api/" + pl + "/:id");
+      });
+      if (cfg.feats.streaming) L("- POST /api/conversaciones/:id/mensajes → respuesta SSE (streaming de tokens)");
+      if (cfg.feats.mapas) L("- WS /ws/rastreo/:id → posición en tiempo real");
+      if (cfg.feats.pagos) L("- POST /api/pagos/intento · webhook POST /webhooks/pagos");
+      if (cfg.feats.notificaciones) L("- POST /api/push/suscribir (Web Push, VAPID)");
+      L("\n## Autorización por rol");
+      cfg.roles.forEach((r) => L("- " + r + ": " + (r === "Admin" ? "acceso total, panel de gestión" : "CRUD sobre sus propios recursos, lectura pública según pantalla")));
+      L("\n## Infra sugerida");
+      L("- API: Node/Express o serverless · DB: Postgres · Auth: JWT + refresh");
+      if (cfg.feats.offline) L("- Sync offline: cola de mutaciones + Service Worker (Background Sync)");
+      L("- PWA: manifest.json, Service Worker, instalable, HTTPS");
+    } else {
+      L("Construye una PWA llamada \"" + p.n + "\" (" + p.cat + " — " + p.tag + ").\n");
+      L("PANTALLAS: " + acts.map((s, i) => s.n + " (" + s.tipo + (i === 0 ? ", inicio" : "") + ")").join(", ") + ".");
+      L("NAVEGACIÓN: " + nav + (cfg.fab ? " con FAB de compose" : "") + ". Responsive: sidebar en escritorio.");
+      L("ESTILO: tema " + cfg.tema + ", fondo negro absoluto si oscuro, acento " + cfg.acento + ", tipografía " + cfg.fuente + ", esquinas " + cfg.radio + "px, superficies tipo \"" + cfg.efecto + "\" (cristal = translúcido con backdrop-blur), animaciones " + cfg.anim + (cfg.haptica ? ", vibración háptica en taps (navigator.vibrate)" : "") + ".");
+      L("ROLES: " + cfg.roles.join(", ") + " — con guards de ruta y permisos en API.");
+      L("FEATURES: " + feats.map((f) => f.n).join(", ") + ".");
+      L("BACKEND: modelos " + p.modelos.join(", ") + " con API REST" + (cfg.feats.streaming ? " + SSE para streaming de IA" : "") + (cfg.feats.mapas ? " + WebSocket para rastreo" : "") + ". Postgres + JWT.");
+      L("REQUISITOS PWA: manifest.json con iconos e instalación, Service Worker con cache de shell" + (cfg.feats.offline ? " y modo offline con sync diferida" : "") + ", Lighthouse PWA ≥ 90.");
+      L("\nEntrega el proyecto completo (frontend + backend) listo para correr con instrucciones.");
+    }
+    return lineas.join("\n");
+  }
+
+  renderVals() {
+    const s = this.state;
+    if (!s.db) return { cargando: true, esCat: false, esConf: false, esPreview: false, expOpen: false };
+    const db = s.db;
+    const V = { cargando: false, expOpen: s.exp };
+    const on = "rgba(255,255,255,0.92)", offBg = "rgba(255,255,255,0.05)";
+
+    // ══ CATÁLOGO ══
+    V.esCat = s.vista === "cat";
+    V.nPlantillas = db.PLANTILLAS.length;
+    const cats = ["Todas"].concat([...new Set(db.PLANTILLAS.map((p) => p.cat))]);
+    V.filtros = cats.map((n) => ({
+      n, bg: n === s.filtro ? "#FFFFFF" : "transparent",
+      col: n === s.filtro ? "#000000" : "rgba(255,255,255,0.65)",
+      bord: n === s.filtro ? "#FFFFFF" : "rgba(255,255,255,0.14)"
+    }));
+    V.onFiltro = (e) => this.setState({ filtro: e.currentTarget.dataset.id });
+    V.lista = db.PLANTILLAS.filter((p) => s.filtro === "Todas" || p.cat === s.filtro)
+      .map((p) => ({ ...p, nScr: p.pantallas.length, nRoles: p.roles.length, nFeats: p.featOn.length }));
+    V.onAbrir = (e) => {
+      const id = e.currentTarget.dataset.id;
+      const p = db.PLANTILLAS.find((x) => x.id === id);
+      this.setState({ vista: "conf", sel: id, tab: "pantallas", scrId: p.pantallas[0].id, drawer: false }, () => this.persist());
+    };
+    V.esConf = false; V.esPreview = false;
+    if (s.vista !== "conf" || !s.sel) { if (s.exp) V.p = { n: "" }; return V; }
+
+    // ══ CONFIGURADOR ══
+    const p = this.getP();
+    const cfg = this.getCfg(p);
+    const acts = this.activas(p, cfg);
+    const T = this.tema(cfg);
+    Object.assign(V, T);
+    V.esCat = false; V.esConf = true;
+    V.p = p;
+    V.urlApp = p.id + ".app";
+    V.fontApp = "'" + cfg.fuente + "', sans-serif";
+    V.radVal = cfg.radio;
+    V.radSm = Math.max(8, cfg.radio - 6);
+    V.radLabel = cfg.radio + "px";
+    V.onVolver = () => this.setState({ vista: "cat" }, () => this.persist());
+
+    // dispositivo
+    const dev = s.device || this.props.dispositivoInicial || "movil";
+    V.devMovil = dev === "movil"; V.devEsc = dev === "escritorio";
+    V.onDevMovil = () => this.setState({ device: "movil" });
+    V.onDevEsc = () => this.setState({ device: "escritorio" });
+    V.devMovilBg = V.devMovil ? "#FFFFFF" : "transparent"; V.devMovilCol = V.devMovil ? "#000000" : "rgba(255,255,255,0.6)";
+    V.devEscBg = V.devEsc ? "#FFFFFF" : "transparent"; V.devEscCol = V.devEsc ? "#000000" : "rgba(255,255,255,0.6)";
+
+    // tabs
+    const tabsDef = [["pantallas", "Pantallas"], ["nav", "Navegación"], ["estilo", "Estilo"], ["efectos", "Efectos"], ["roles", "Roles"], ["features", "Features"], ["flujo", "Flujo"]];
+    V.tabs = tabsDef.map(([id, n]) => ({
+      id, n, bg: s.tab === id ? "#FFFFFF" : "transparent",
+      col: s.tab === id ? "#000000" : "rgba(255,255,255,0.6)",
+      bord: s.tab === id ? "#FFFFFF" : "rgba(255,255,255,0.13)"
+    }));
+    V.onTab = (e) => this.setState({ tab: e.currentTarget.dataset.id });
+    V.tabPantallas = s.tab === "pantallas"; V.tabNav = s.tab === "nav"; V.tabEstilo = s.tab === "estilo";
+    V.tabEfectos = s.tab === "efectos"; V.tabRoles = s.tab === "roles"; V.tabFeatures = s.tab === "features";
+    V.tabFlujo = s.tab === "flujo";
+    V.esPreview = !V.tabFlujo;
+
+    // pantalla actual
+    let scr = acts.find((x) => x.id === s.scrId) || acts[0] || p.pantallas[0];
+    V.scr = scr;
+    V.scrKey = s.scrKey;
+    V.etiqueta = p.n + " · " + (scr ? scr.n : "");
+    V.scrAnim = this.scrAnimCss(cfg);
+
+    // ── tab pantallas ──
+    const todas = p.pantallas.concat(db.EXTRA_PANTALLAS.filter((e) => cfg.extras.includes(e.id)));
+    V.nActivas = acts.length;
+    V.pantallasCtl = todas.map((sc) => {
+      const activa = !cfg.off.includes(sc.id);
+      const esActual = scr && sc.id === scr.id;
+      return {
+        id: sc.id, n: sc.n, tipo: sc.tipo, ic: db.IC[sc.ic] || db.IC.grid,
+        esInicio: acts[0] && acts[0].id === sc.id,
+        bg: esActual ? "rgba(255,255,255,0.07)" : "rgba(255,255,255,0.028)",
+        bord: esActual ? cfg.acento + "66" : "rgba(255,255,255,0.09)",
+        icCol: activa ? cfg.acento : "rgba(255,255,255,0.3)",
+        swBg: activa ? cfg.acento : "rgba(255,255,255,0.14)",
+        swTx: activa ? "17px" : "0px"
+      };
+    });
+    V.onVerPantalla = (e) => { const id = e.currentTarget.dataset.id; if (!cfg.off.includes(id)) this.irA(id); };
+    V.onTogglePantalla = (e) => {
+      const id = e.currentTarget.dataset.id;
+      let off = cfg.off.slice(), extras = cfg.extras.slice();
+      if (extras.includes(id) && !off.includes(id)) { extras = extras.filter((x) => x !== id); }
+      else if (off.includes(id)) off = off.filter((x) => x !== id);
+      else { if (this.activas(p, cfg).length <= 1) return; off = off.concat([id]); }
+      this.setCfg({ off, extras });
+      if (s.scrId === id) this.setState({ scrId: null });
+    };
+    V.extrasCtl = db.EXTRA_PANTALLAS.filter((e) => !cfg.extras.includes(e.id));
+    V.onAddExtra = (e) => {
+      const id = e.currentTarget.dataset.id;
+      this.setCfg({ extras: cfg.extras.concat([id]) });
+      this.setState({ scrId: id });
+    };
+
+    // ── tab nav ──
+    V.navTabBg = cfg.nav === "tabbar" ? "rgba(255,255,255,0.07)" : "rgba(255,255,255,0.025)";
+    V.navTabBord = cfg.nav === "tabbar" ? cfg.acento + "77" : "rgba(255,255,255,0.1)";
+    V.navDrBg = cfg.nav === "drawer" ? "rgba(255,255,255,0.07)" : "rgba(255,255,255,0.025)";
+    V.navDrBord = cfg.nav === "drawer" ? cfg.acento + "77" : "rgba(255,255,255,0.1)";
+    V.onNavTab = () => this.setCfg({ nav: "tabbar" });
+    V.onNavDrawer = () => this.setCfg({ nav: "drawer" });
+    V.onFab = () => this.setCfg({ fab: !cfg.fab });
+    V.fabSwBg = cfg.fab ? cfg.acento : "rgba(255,255,255,0.14)"; V.fabSwTx = cfg.fab ? "17px" : "0px";
+
+    // ── tab estilo ──
+    V.temaOscBg = cfg.tema === "oscuro" ? "#FFFFFF" : "transparent"; V.temaOscCol = cfg.tema === "oscuro" ? "#000000" : "rgba(255,255,255,0.6)";
+    V.temaClaBg = cfg.tema === "claro" ? "#FFFFFF" : "transparent"; V.temaClaCol = cfg.tema === "claro" ? "#000000" : "rgba(255,255,255,0.6)";
+    V.onTemaOscuro = () => this.setCfg({ tema: "oscuro" });
+    V.onTemaClaro = () => this.setCfg({ tema: "claro" });
+    V.acentosOpts = db.ACENTOS.map((c) => ({
+      c, ring: c === cfg.acento ? "#FFFFFF" : "rgba(255,255,255,0.15)",
+      glow: c === cfg.acento ? "0 0 16px " + c + "88" : "none"
+    }));
+    V.onAcento = (e) => this.setCfg({ acento: e.currentTarget.dataset.id });
+    V.fuentesOpts = db.FUENTES.map((f) => ({
+      f, bg: f === cfg.fuente ? "rgba(255,255,255,0.07)" : "rgba(255,255,255,0.025)",
+      bord: f === cfg.fuente ? cfg.acento + "66" : "rgba(255,255,255,0.09)",
+      check: f === cfg.fuente ? cfg.acento : "transparent"
+    }));
+    V.onFuente = (e) => this.setCfg({ fuente: e.currentTarget.dataset.id });
+    V.onRadio = (e) => this.setCfg({ radio: parseInt(e.target.value, 10) });
+
+    // ── tab efectos ──
+    const efDef = [["cristal", "Cristal"], ["solido", "Sólido"], ["neon", "Neón"]];
+    V.efectoOpts = efDef.map(([id, n]) => ({
+      id, n,
+      bg: cfg.efecto === id ? "rgba(255,255,255,0.07)" : "rgba(255,255,255,0.025)",
+      bord: cfg.efecto === id ? cfg.acento + "77" : "rgba(255,255,255,0.1)",
+      demo: id === "cristal" ? "rgba(255,255,255,0.09)" : id === "solido" ? "#1A1A1E" : "rgba(8,8,11,0.9)",
+      demoBord: id === "neon" ? cfg.acento + "88" : "rgba(255,255,255,0.15)",
+      demoGlow: id === "neon" ? "0 0 14px " + cfg.acento + "44" : "none"
+    }));
+    V.onEfecto = (e) => this.setCfg({ efecto: e.currentTarget.dataset.id });
+    const anDef = [["sin", "Sin"], ["suaves", "Suaves"], ["intensas", "Intensas"]];
+    V.animOpts = anDef.map(([id, n]) => ({
+      id, n, bg: cfg.anim === id ? "#FFFFFF" : "transparent",
+      col: cfg.anim === id ? "#000000" : "rgba(255,255,255,0.6)"
+    }));
+    V.onAnim = (e) => this.setCfg({ anim: e.currentTarget.dataset.id });
+    V.onHaptica = () => this.setCfg({ haptica: !cfg.haptica });
+    V.hapSwBg = cfg.haptica ? cfg.acento : "rgba(255,255,255,0.14)"; V.hapSwTx = cfg.haptica ? "17px" : "0px";
+
+    // ── tab roles ──
+    V.rolesOpts = db.ROLES_DEF.map((n) => {
+      const act = cfg.roles.includes(n);
+      return {
+        n, bg: act ? "rgba(255,255,255,0.09)" : "transparent",
+        col: act ? "#FFFFFF" : "rgba(255,255,255,0.45)",
+        bord: act ? cfg.acento + "77" : "rgba(255,255,255,0.13)"
+      };
+    });
+    V.onRol = (e) => {
+      const n = e.currentTarget.dataset.id;
+      const roles = cfg.roles.includes(n) ? cfg.roles.filter((x) => x !== n) : cfg.roles.concat([n]);
+      if (roles.length) this.setCfg({ roles });
+    };
+    const permDesc = {
+      Admin: "Panel completo: usuarios, contenido, métricas y configuración global.",
+      Usuario: "Usa la app, gestiona su perfil, su contenido y sus datos.",
+      Cliente: "Compra o reserva, paga, califica y consulta su historial.",
+      Vendedor: "Publica productos, gestiona inventario y ve sus ventas.",
+      Repartidor: "Recibe pedidos asignados, actualiza estado y comparte ubicación.",
+      Profesional: "Gestiona su agenda, acepta solicitudes y cobra servicios.",
+      Conductor: "Acepta viajes, navega la ruta y recibe pagos por viaje.",
+      Instructor: "Crea cursos y lecciones, responde a alumnos, ve su analítica.",
+      Soporte: "Atiende conversaciones de soporte y gestiona reportes.",
+      Moderador: "Revisa contenido reportado y aplica sanciones.",
+      Anfitrión: "Gestiona mesas/espacios, confirma reservas y horarios.",
+      Editor: "Publica y edita artículos, gestiona secciones."
+    };
+    V.rolesPerm = cfg.roles.map((n) => ({ n, d: permDesc[n] || "Acceso a sus propios recursos." }));
+
+    // ── tab features ──
+    V.nFeatsOn = Object.values(cfg.feats).filter(Boolean).length;
+    V.featsOpts = db.FEATURES_DEF.map((f) => {
+      const onF = !!cfg.feats[f.id];
+      return {
+        ...f,
+        bg: onF ? "rgba(255,255,255,0.045)" : "rgba(255,255,255,0.02)",
+        bord: onF ? "rgba(255,255,255,0.13)" : "rgba(255,255,255,0.07)",
+        swBg: onF ? cfg.acento : "rgba(255,255,255,0.14)",
+        swTx: onF ? "17px" : "0px"
+      };
+    });
+    V.onFeature = (e) => {
+      const id = e.currentTarget.dataset.id;
+      this.setCfg({ feats: Object.assign({}, cfg.feats, { [id]: !cfg.feats[id] }) });
+    };
+
+    // ── flujo ──
+    if (V.tabFlujo) {
+      Object.assign(V, this.flujoVals(p, cfg, acts, cfg.acento));
+      V.onNodoDown = (e) => {
+        e.preventDefault();
+        const id = e.currentTarget.dataset.id;
+        const svg = e.currentTarget.ownerSVGElement;
+        const r = svg.getBoundingClientRect();
+        const sx = 1100 / r.width;
+        const auto = this.autoPos(acts);
+        const cur = (cfg.pos && cfg.pos[id]) || auto[id];
+        this.setState({ drag: { id, ox: (e.clientX - r.left) * sx - cur.x, oy: (e.clientY - r.top) * (640 / r.height) - cur.y } });
+      };
+      V.onLienzoMove = (e) => {
+        if (!s.drag) return;
+        const r = e.currentTarget.getBoundingClientRect();
+        const x = (e.clientX - r.left) * (1100 / r.width) - s.drag.ox;
+        const y = (e.clientY - r.top) * (640 / r.height) - s.drag.oy;
+        const pos = Object.assign({}, cfg.pos, { [s.drag.id]: { x: Math.max(0, Math.min(940, x)), y: Math.max(0, Math.min(584, y)) } });
+        this.setCfg({ pos });
+      };
+      V.onLienzoUp = () => { if (s.drag) this.setState({ drag: null }, () => this.persist()); };
+      V.onRegen = () => this.setCfg({ pos: {} });
+    }
+
+    // ── preview: frame + nav ──
+    V.frW = V.devMovil ? "342px" : "min(920px, calc(100vw - 460px))";
+    V.frH = V.devMovil ? "716px" : "600px";
+    V.frRad = V.devMovil ? "46px" : "18px";
+    const barTabs = V.devMovil && cfg.nav === "tabbar";
+    const barHamb = V.devMovil && cfg.nav === "drawer";
+    V.barTabs = barTabs; V.barHamb = barHamb;
+    V.cTop = V.devEsc ? "42px" : barHamb ? "92px" : "44px";
+    V.cLeft = V.devEsc ? "200px" : "0px";
+    V.cBot = barTabs ? "78px" : "0px";
+    V.fabBot = barTabs ? "88px" : "20px";
+    V.fabRad = Math.max(14, cfg.radio) + "px";
+    V.fabVisible = cfg.fab;
+    V.drawerOpen = s.drawer && barHamb;
+    V.onDrawer = () => this.setState({ drawer: !s.drawer });
+    const navSrc = acts.slice(0, V.devEsc ? 8 : 5);
+    const mkNav = (arr) => arr.map((sc) => {
+      const act = scr && sc.id === scr.id;
+      return {
+        id: sc.id, n: sc.n, ic: db.IC[sc.ic] || db.IC.grid,
+        tBg: act ? T.accTint : "transparent", tCol: act ? cfg.acento : T.subApp,
+        dBg: act ? T.accTint : "transparent", dCol: act ? cfg.acento : T.subApp
+      };
+    });
+    V.navItems = mkNav(navSrc);
+    V.navItemsAll = mkNav(acts);
+    V.onScr = (e) => { this.irA(e.currentTarget.dataset.id); if (cfg.haptica && navigator.vibrate) navigator.vibrate(8); };
+    V.onScrDrawer = V.onScr;
+
+    // ── contenido de pantalla ──
+    const tipo = scr ? scr.tipo : "";
+    const d = (scr && scr.datos) || {};
+    V.esChat = tipo === "chat"; V.esFeed = tipo === "feed"; V.esGrid = tipo === "grid";
+    V.esList = tipo === "list"; V.esDetail = tipo === "detail"; V.esDash = tipo === "dashboard";
+    V.esPlayer = tipo === "player"; V.esMap = tipo === "map"; V.esCal = tipo === "calendar";
+    V.esProfile = tipo === "profile"; V.esLogin = tipo === "login";
+    const ini = (t) => (t || "?").replace(/[^A-Za-zÀ-ÿ0-9]/g, "").charAt(0).toUpperCase() || "•";
+
+    if (V.esChat) {
+      const key = s.sel + ":" + scr.id;
+      const msgs = (d.msgs || []).concat(s.chatExtra[key] || []);
+      V.dMsgs = msgs.map((m) => m.de === "u"
+        ? { t: m.t, al: "flex-end", bg: cfg.acento, col: T.txtOnAcc, bord: "transparent" }
+        : { t: m.t, al: "flex-start", bg: T.cardBg, col: T.txtApp, bord: T.bordApp });
+      V.escribiendo = s.escribiendo;
+      V.dSugs = msgs.length <= 2 ? d.sugerencias || [] : [];
+      V.chatVal = s.chatVal;
+      V.onChatInput = (e) => this.setState({ chatVal: e.target.value });
+      V.onChatKey = (e) => { if (e.key === "Enter") this.enviarChat(); };
+      V.onChatSend = () => this.enviarChat();
+      V.onSugerencia = (e) => this.enviarChat(e.currentTarget.dataset.id);
+    }
+    if (V.esFeed) V.dPosts = (d.posts || []).map((po) => ({ ...po, ini: ini(po.a) }));
+    if (V.esGrid) {
+      V.gridTitulo = d.titulo || scr.n;
+      V.gridCols = V.devEsc ? 4 : 2;
+      V.dProds = (d.prods || []).map((pr) => ({ ...pr, ini: ini(pr.t) }));
+    }
+    if (V.esList) {
+      V.dItems = (d.items || []).map((it) => ({ ...it, ini: ini(it.t) }));
+      V.listCta = d.cta || false;
+    }
+    if (V.esDetail) V.dSpecs = d.specs || [];
+    if (V.esDash) {
+      const ics = [db.IC.send, db.IC.plus, db.IC.grid];
+      V.dAcciones = (d.acciones || []).map((n, i) => ({ n, ic: ics[i % 3] }));
+      V.dMovs = (d.movs || []).map((mv) => ({ ...mv, ini: ini(mv.t) }));
+    }
+    if (V.esPlayer) V.dCola = d.cola || [];
+    if (V.esMap) V.dOpc = (d.opciones || []).map((op, i) => ({
+      ...op,
+      bg: i === 0 ? T.accTint : "transparent",
+      bord: i === 0 ? cfg.acento + "55" : T.bordApp
+    }));
+    if (V.esCal) {
+      const dias = ["L", "M", "X", "J", "V", "S", "D"];
+      V.dDias = dias.map((dd, i) => ({
+        d: dd, num: i + 1,
+        bg: i === 3 ? cfg.acento : "transparent",
+        bord: i === 3 ? cfg.acento : T.bordApp,
+        col: i === 3 ? T.txtOnAcc : T.txtApp,
+        subCol: i === 3 ? T.txtOnAcc : T.subApp
+      }));
+      V.dSlots = (d.slots || []).map((sl) => ({
+        ...sl, op: sl.dispo ? "1" : "0.45",
+        chip: sl.dispo ? "Libre" : "Lleno",
+        chipCol: sl.dispo ? T.txtOnAcc : T.subApp,
+        chipBg: sl.dispo ? cfg.acento : T.bordApp
+      }));
+    }
+    if (V.esProfile) { V.dMenu = d.menu || []; V.perfilIni = ini(d.nombre); }
+    if (V.esLogin) V.featBio = !!cfg.feats.biometria;
+    V.onItemTap = () => {
+      if (cfg.haptica && navigator.vibrate) navigator.vibrate(8);
+      const to = (scr.a || []).find((id) => acts.some((x) => x.id === id));
+      if (to) this.irA(to);
+    };
+    V.onFabTap = () => {
+      if (cfg.haptica && navigator.vibrate) navigator.vibrate(12);
+      const chatScr = acts.find((x) => x.tipo === "chat");
+      if (chatScr) this.irA(chatScr.id);
+    };
+
+    // ── export ──
+    V.onExportar = () => this.setState({ exp: true, copiado: false });
+    V.onCerrarExp = () => this.setState({ exp: false });
+    const expDef = [["resumen", "Resumen"], ["backend", "Backend"], ["prompt", "Prompt Claude Code"]];
+    V.expTabs = expDef.map(([id, n]) => ({
+      id, n, bg: s.expTab === id ? "#FFFFFF" : "transparent",
+      col: s.expTab === id ? "#000000" : "rgba(255,255,255,0.6)",
+      bord: s.expTab === id ? "#FFFFFF" : "rgba(255,255,255,0.14)"
+    }));
+    V.onExpTab = (e) => this.setState({ expTab: e.currentTarget.dataset.id, copiado: false });
+    V.expTexto = s.exp ? this.buildExport(s.expTab, p, cfg, acts) : "";
+    V.copiarTxt = s.copiado ? "Copiado ✓" : "Copiar";
+    V.onCopiar = () => {
+      navigator.clipboard.writeText(this.buildExport(s.expTab, p, cfg, acts)).then(() => {
+        this.setState({ copiado: true });
+        this.timers.push(setTimeout(() => this.setState({ copiado: false }), 1800));
+      });
+    };
+    V.onDescargar = () => {
+      const todo = ["resumen", "backend", "prompt"].map((t) => this.buildExport(t, p, cfg, acts)).join("\n\n---\n\n");
+      const blob = new Blob([todo], { type: "text/markdown" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = p.id + "-spec.md";
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+    };
+
+    return V;
+  }
+}
+
+</script>
+</body>
+</html>
